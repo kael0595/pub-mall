@@ -5,12 +5,16 @@
     <title>상품 등록</title>
 </head>
 <body>
-<form th:action="@{/product/add}" th:object="${product}" method="post">
+<form th:action="@{/product/add}" th:object="${product}" method="post" enctype="multipart/form-data">
     <center>
         <h1>상품 등록</h1>
         <div>
             <label for="name">상품명</label>
             <input type="text" th:field="*{name}" id="name">
+        </div>
+        <div>
+            <label for="image">상품사진</label>
+            <input type="file" accept="image/jpeg, image/png, image/jpg" name="files" id="image" multiple>
         </div>
         <div>
             <label for="code">상품코드</label>
