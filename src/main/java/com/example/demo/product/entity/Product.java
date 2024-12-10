@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.List;
+
 @Data
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -28,4 +30,7 @@ public class Product extends BaseEntity {
     private int price;
     
     private int discount;
+
+    private int viewCount;
+
 }

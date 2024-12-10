@@ -14,6 +14,7 @@
         <th>카테고리</th>
         <th>상품가격</th>
         <th>할인율</th>
+        <th>조회수</th>
         <th>등록일자</th>
         <th>수정일자</th>
     </tr>
@@ -28,6 +29,7 @@
         <td th:text="${product.category}"></td>
         <td th:text="${product.price}"></td>
         <td th:text="${product.discount}"></td>
+        <td th:text="${product.viewCount}"></td>
         <td th:text="${product.createDt}"></td>
         <td th:text="${product.updateDt}"></td>
     </tr>

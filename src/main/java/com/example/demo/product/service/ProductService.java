@@ -35,4 +35,9 @@ public class ProductService {
     public Product findById(Long id) {
         return productRepository.findById(id).orElse(null);
     }
+
+    public void plusViewCount(Product product) {
+        product.setViewCount(product.getViewCount() + 1);
+        productRepository.save(product);
+    }
 }
