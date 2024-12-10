@@ -3,7 +3,6 @@ package com.example.demo.product.service;
 import com.example.demo.product.dto.ProductDto;
 import com.example.demo.product.entity.Product;
 import com.example.demo.product.repository.ProductRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +27,7 @@ public class ProductService {
         product.setDescription(productDto.getDescription());
         product.setCode(productDto.getCode());
         product.setDiscount(productDto.getDiscount());
+        product.setSkipAuditing(true);
 
         return productRepository.save(product);
     }

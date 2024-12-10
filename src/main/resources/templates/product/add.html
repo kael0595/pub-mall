@@ -5,19 +5,20 @@
     <title>상품 등록</title>
 </head>
 <body>
-<form th:action="@{/product/add}" method="post">
+<form th:action="@{/product/add}" th:object="${product}" method="post">
     <center>
+        <h1>상품 등록</h1>
         <div>
             <label for="name">상품명</label>
-            <input type="text" id="name" name="name">
+            <input type="text" th:field="*{name}" id="name">
         </div>
         <div>
             <label for="code">상품코드</label>
-            <input type="text" id="code" name="code">
+            <input type="text" th:field="*{code}" id="code">
         </div>
         <div>
             <label for="category">카테고리</label>
-            <select name="category" id="category">
+            <select name="category" th:field="*{category}" id="category">
                 <option value="a">a</option>
                 <option value="b">b</option>
                 <option value="c">c</option>
@@ -25,15 +26,15 @@
         </div>
         <div>
             <label for="description">상품설명</label>
-            <input type="text" id="description" name="description">
+            <input type="text" th:field="*{description}" id="description">
         </div>
         <div>
             <label for="price">상품가격</label>
-            <input type="text" id="price" name="price">
+            <input type="number" th:field="*{price}" id="price">
         </div>
         <div>
             <label for="discount">상품할인율</label>
-            <input type="text" id="discount" name="discount">%
+            <input type="text" th:field="*{discount}" id="discount">%
         </div>
         <button>등록하기</button>
         <button>취소</button>
