@@ -19,7 +19,7 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product add(@Valid ProductDto productDto) {
+    public Product add(ProductDto productDto) {
 
         Product product = new Product();
         product.setName(productDto.getName());
@@ -37,7 +37,20 @@ public class ProductService {
     }
 
     public void plusViewCount(Product product) {
+        product.setSkipAuditing(true);
         product.setViewCount(product.getViewCount() + 1);
         productRepository.save(product);
+    }
+
+    public void modify(Product product, ProductDto productDto) {
+
+        product.setName(productDto.getName());
+        product.setPrice(productDto.getPrice());
+        product.setCategory(productDto.getCategory());
+        product.setDescription(productDto.getDescription());
+        product.setCode(productDto.getCode());
+        product.setDiscount(productDto.getDiscount());
+        productRepository.save(product);
+
     }
 }

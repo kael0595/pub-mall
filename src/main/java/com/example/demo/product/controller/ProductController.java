@@ -58,4 +58,27 @@ public class ProductController {
         return "product/detail";
     }
 
+    @GetMapping("/modify/{id}")
+    public String modifyForm(@PathVariable("id") Long id, Model model) {
+        Product product = productService.findById(id);
+        model.addAttribute("product", product);
+        return "product/modify";
+    }
+
+    @PostMapping("/modify/{id}")
+    public String modify(@PathVariable("id") Long id,
+                         @Valid ProductDto productDto,
+                         BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "product/modify";
+        }
+
+        Product product = productService.findById(id);
+
+        productService.modify(product, productDto);
+
+
+        return "redirect:/product/detail/" + product.getId();
+    }
+
 }

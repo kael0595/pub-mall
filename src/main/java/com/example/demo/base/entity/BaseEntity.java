@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -25,5 +26,21 @@ public class BaseEntity {
     @CreatedDate
     private LocalDateTime createDt;
 
+    @LastModifiedDate
     private LocalDateTime updateDt;
+
+    @Setter
+    @Getter
+    @Transient
+    private boolean skipAuditing = false;
+
+    @PrePersist
+    @PreUpdate
+    public void preUpdate() {
+
+        if (skipAuditing) {
+            updateDt = null;
+        }
+    }
+
 }

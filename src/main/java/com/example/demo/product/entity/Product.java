@@ -3,13 +3,12 @@ package com.example.demo.product.entity;
 import com.example.demo.base.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.PostLoad;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.util.List;
 
 @Data
 @Entity
@@ -32,5 +31,10 @@ public class Product extends BaseEntity {
     private int discount;
 
     private int viewCount;
+
+    @PostLoad
+    public void resetAuditing() {
+        setSkipAuditing(false);
+    }
 
 }
