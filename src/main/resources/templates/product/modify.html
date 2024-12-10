@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>상품수정</title>
+</head>
+<body>
+<form th:action="@{/product/modify/{id}(id=${product.id})}" th:object="${product}" method="post">
+    <center>
+        <h1>상품 수정</h1>
+        <div>
+            <label for="productName">상품명</label>
+            <input type="text" th:field="*{name}" id="productName">
+        </div>
+        <div>
+            <label for="productCode">상품코드</label>
+            <input type="text" th:field="*{code}" id="productCode">
+        </div>
+        <div>
+            <label for="category">카테고리</label>
+            <select th:field="*{category}" id="category">
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+            </select>
+        </div>
+        <div>
+            <label for="description">상품설명</label>
+            <input type="text" th:field="*{description}" id="description">
+        </div>
+        <div>
+            <label for="price">상품가격</label>
+            <input type="number" th:field="*{price}" id="price" min="0" step="0.01">
+        </div>
+        <div>
+            <label for="discount">상품할인율</label>
+            <input type="number" th:field="*{discount}" id="discount" min="0" max="100" step="0.01">
+            <span>%</span>
+        </div>
+        <button type="submit">수정하기</button>
+        <button type="button" onclick="window.history.back();">취소</button>
+    </center>
+</form>
+
+</body>
+</html>
