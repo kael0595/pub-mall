@@ -20,7 +20,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="product : ${productList}">
+    <tr th:each="product : ${productList}" th:if="${!product.deleted}">
         <td th:text="${product.id}"></td>
         <td>
             <a th:href="@{|/product/detail/${product.id}|}" th:text="${product.name}"></a>
