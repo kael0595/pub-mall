@@ -53,4 +53,9 @@ public class ProductService {
         productRepository.save(product);
 
     }
+
+    public void delete(Product product) {
+        product.setDeleted(true);
+        productRepository.save(product);
+    }
 }
