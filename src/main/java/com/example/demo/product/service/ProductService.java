@@ -1,7 +1,9 @@
 package com.example.demo.product.service;
 
+import com.example.demo.product.dto.ProductDto;
 import com.example.demo.product.entity.Product;
 import com.example.demo.product.repository.ProductRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,5 +17,18 @@ public class ProductService {
 
     public List<Product> findAll() {
         return productRepository.findAll();
+    }
+
+    public Product add(@Valid ProductDto productDto) {
+
+        Product product = new Product();
+        product.setName(productDto.getName());
+        product.setPrice(productDto.getPrice());
+        product.setCategory(productDto.getCategory());
+        product.setDescription(productDto.getDescription());
+        product.setCode(productDto.getCode());
+        product.setDiscount(productDto.getDiscount());
+
+        return productRepository.save(product);
     }
 }
