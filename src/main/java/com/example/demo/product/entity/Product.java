@@ -32,6 +32,8 @@ public class Product extends BaseEntity {
 
     private int viewCount;
 
+    private boolean deleted;
+
     @PostLoad
     public void resetAuditing() {
         setSkipAuditing(false);
