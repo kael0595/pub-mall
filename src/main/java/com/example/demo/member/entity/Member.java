@@ -1,4 +1,4 @@
-package com.example.demo.base.member.entity;
+package com.example.demo.member.entity;
 
 import com.example.demo.base.entity.BaseEntity;
 import jakarta.persistence.Entity;
@@ -17,9 +17,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 public class Member extends BaseEntity {
 
-    private String userId;
-
     private String username;
+
+    private String name;
 
     private String password;
 
@@ -32,4 +32,6 @@ public class Member extends BaseEntity {
     private String addr1;
 
     private String addr2;
+
+    private Grade grade;
 }

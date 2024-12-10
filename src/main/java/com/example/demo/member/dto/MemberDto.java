@@ -1,4 +1,4 @@
-package com.example.demo.base.member.dto;
+package com.example.demo.member.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,9 +7,9 @@ import lombok.Setter;
 @Setter
 public class MemberDto {
 
-    private String userId;
-
     private String username;
+
+    private String name;
 
     private String password1;
 

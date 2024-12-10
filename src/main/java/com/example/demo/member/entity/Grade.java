@@ -1,4 +1,4 @@
-package com.example.demo.base.member.entity;
+package com.example.demo.member.entity;
 
 import lombok.Getter;
 

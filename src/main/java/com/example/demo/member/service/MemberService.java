@@ -1,9 +1,9 @@
-package com.example.demo.base.member.service;
+package com.example.demo.member.service;
 
-import com.example.demo.base.member.dto.MemberDto;
-import com.example.demo.base.member.entity.Grade;
-import com.example.demo.base.member.entity.Member;
-import com.example.demo.base.member.repository.MemberRepository;
+import com.example.demo.member.dto.MemberDto;
+import com.example.demo.member.entity.Grade;
+import com.example.demo.member.entity.Member;
+import com.example.demo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,5 +37,9 @@ public class MemberService {
         }
 
         memberRepository.save(member);
+    }
+
+    public Member findByUsernameAndPassword(String username, String password) {
+        return memberRepository.findByUsernameAndPassword(username, password);
     }
 }

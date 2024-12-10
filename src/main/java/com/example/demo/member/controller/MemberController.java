@@ -1,8 +1,8 @@
-package com.example.demo.base.member.controller;
+package com.example.demo.member.controller;
 
-import com.example.demo.base.member.dto.MemberDto;
-import com.example.demo.base.member.entity.Member;
-import com.example.demo.base.member.service.MemberService;
+import com.example.demo.member.dto.MemberDto;
+import com.example.demo.member.entity.Member;
+import com.example.demo.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
