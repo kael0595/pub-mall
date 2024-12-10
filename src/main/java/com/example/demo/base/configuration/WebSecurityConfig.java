@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -15,6 +16,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
+
+    private final UserDetailsService userDetailsService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -34,12 +37,11 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/**").permitAll()
                 )
-                // Form 로그인을 활용하는경우 (JWT에는 필요없음)
                 .formLogin(form -> form
                         .loginPage("/member/login")
                         .loginProcessingUrl("/member/login")
-                        .defaultSuccessUrl("/member/join")
-                        .failureUrl("/member/join")
+                        .defaultSuccessUrl("/")
+                        .failureUrl("/member/login?error")
                         .permitAll()
                 )
                 .logout((logout) -> logout
