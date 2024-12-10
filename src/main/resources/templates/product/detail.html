@@ -47,6 +47,11 @@
         <span>수정일자</span>
         <span th:text="${product.updateDt}"></span>
     </div>
+    <div>
+        <a th:href="@{|/product/modify/${product.id}}">수정하기</a>
+        <a th:href="@{|/product/delete/${product.id}}">삭제하기</a>
+    </div>
+
 </center>
 </body>
 </html>
