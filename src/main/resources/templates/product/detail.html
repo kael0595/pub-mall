@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>제품상세</title>
+</head>
+<body>
+<center>
+    <div>
+        <span>NO.</span>
+        <span th:text="${product.id}"></span>
+    </div>
+    <div>
+        <span>상품명</span>
+        <span th:text="${product.name}"></span>
+    </div>
+    <div>
+        <span>상품코드</span>
+        <span th:text="${product.code}"></span>
+    </div>
+    <div>
+        <span>카테고리</span>
+        <span th:text="${product.category}"></span>
+    </div>
+    <div>
+        <span>제품설명</span>
+        <span th:text="${product.description}"></span>
+    </div>
+    <div>
+        <span>제품가격</span>
+        <span th:text="${product.price}"></span>
+    </div>
+    <div>
+        <span>할인율</span>
+        <span th:text="${product.discount}"></span>
+        <span>%</span>
+    </div>
+</center>
+</body>
+</html>
