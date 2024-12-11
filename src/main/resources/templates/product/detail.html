@@ -21,6 +21,7 @@
     <div>
             <div th:each="img : ${product.fileList}">
                 <img th:src="@{${img.filePath}}" alt="Product Image">
+                <a th:href="@{|/product/fileDelete/${img.id}}">삭제</a>
             </div>
     </div>
     <div>

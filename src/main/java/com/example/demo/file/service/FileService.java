@@ -49,4 +49,8 @@ public class FileService {
 
         }
     }
+
+    public void delete(FileUploadEntity file) {
+        fileRepository.delete(file);
+    }
 }

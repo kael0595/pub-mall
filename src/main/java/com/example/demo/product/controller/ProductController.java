@@ -1,5 +1,7 @@
 package com.example.demo.product.controller;
 
+import com.example.demo.file.entity.FileUploadEntity;
+import com.example.demo.file.service.FileService;
 import com.example.demo.product.dto.ProductDto;
 import com.example.demo.product.entity.Product;
 import com.example.demo.product.service.ProductService;
@@ -20,6 +22,8 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+
+    private final FileService fileService;
 
     @GetMapping("/list")
     public String list(Model model) {
@@ -91,6 +95,17 @@ public class ProductController {
 
         productService.delete(product);
         return "redirect:/product/list";
+    }
+
+    @GetMapping("/fileDelete/{id}")
+    public String fileDelete(@PathVariable("id") Long id) {
+        Product product = productService.findById(id);
+
+        for (FileUploadEntity file : product.getFileList()) {
+            fileService.delete(file);
+        }
+
+        return "redirect:/product/detail/" + product.getId();
     }
 
 }
