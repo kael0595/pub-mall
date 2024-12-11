@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -34,9 +36,6 @@ public class Product extends BaseEntity {
 
     private boolean deleted;
 
-    @PostLoad
-    public void resetAuditing() {
-        setSkipAuditing(false);
-    }
+    private LocalDateTime updateDt;
 
 }
