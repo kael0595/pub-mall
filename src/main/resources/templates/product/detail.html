@@ -19,6 +19,11 @@
         <span th:text="${product.code}"></span>
     </div>
     <div>
+            <div th:each="img : ${product.fileList}">
+                <img th:src="@{${img.filePath}}" alt="Product Image">
+            </div>
+    </div>
+    <div>
         <span>카테고리</span>
         <span th:text="${product.category}"></span>
     </div>
