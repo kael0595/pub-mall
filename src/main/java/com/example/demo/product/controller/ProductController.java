@@ -9,7 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -34,13 +36,15 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public String add(@Valid @ModelAttribute ProductDto productDto, BindingResult bindingResult) {
+    public String add(@Valid @ModelAttribute ProductDto productDto,
+                      BindingResult bindingResult,
+                      @RequestPart("files") MultipartFile[] files) throws IOException {
 
         if (bindingResult.hasErrors()) {
             return "product/add";
         }
 
-        Product product = productService.add(productDto);
+        Product product = productService.add(productDto, files);
 
         return "redirect:/product/list";
 
