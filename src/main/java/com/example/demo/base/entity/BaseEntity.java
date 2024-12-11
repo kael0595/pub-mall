@@ -26,21 +26,4 @@ public class BaseEntity {
     @CreatedDate
     private LocalDateTime createDt;
 
-    @LastModifiedDate
-    private LocalDateTime updateDt;
-
-    @Setter
-    @Getter
-    @Transient
-    private boolean skipAuditing = false;
-
-    @PrePersist
-    @PreUpdate
-    public void preUpdate() {
-
-        if (skipAuditing) {
-            updateDt = null;
-        }
-    }
-
 }
