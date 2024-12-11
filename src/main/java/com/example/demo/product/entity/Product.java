@@ -2,6 +2,7 @@ package com.example.demo.product.entity;
 
 import com.example.demo.base.entity.BaseEntity;
 import com.example.demo.file.entity.FileUploadEntity;
+import com.example.demo.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -48,6 +49,9 @@ public class Product extends BaseEntity {
     private boolean deleted;
 
     private LocalDateTime updateDt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
     private List<FileUploadEntity> fileList;

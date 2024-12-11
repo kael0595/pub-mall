@@ -55,7 +55,7 @@ public class ProductController {
 
         Product product = productService.findById(id);
         model.addAttribute("product", product);
-
+        model.addAttribute("imgList", product.getFileList());
         productService.plusViewCount(product);
 
         return "product/detail";

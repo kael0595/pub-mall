@@ -1,6 +1,8 @@
 package com.example.demo.file.service;
 
 import com.example.demo.file.repository.FileRepository;
+import com.example.demo.product.entity.Product;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import com.example.demo.file.entity.FileUploadEntity;
@@ -16,9 +18,10 @@ public class FileService {
 
     private final FileRepository fileRepository;
 
-    private String filePath =System.getProperty("user.dir") + "/uploads/";
+    private String filePath = System.getProperty("user.dir") + "/src/main/resources/static/uploads/";
 
-    public void fileUpload(MultipartFile[] files, long id) throws IOException {
+    @Transactional
+    public void fileUpload(MultipartFile[] files, Product product) throws IOException {
 
         File chkFile = new File(filePath);
 
@@ -39,7 +42,8 @@ public class FileService {
             fileUpload.setOriginalName(fileName);
             fileUpload.setSize(fileSize);
             fileUpload.setExt(ext);
-            fileUpload.setFilePath(filePath);
+            fileUpload.setFilePath("/uploads/" + newFileName);
+            fileUpload.setProduct(product);
 
             fileRepository.save(fileUpload);
 

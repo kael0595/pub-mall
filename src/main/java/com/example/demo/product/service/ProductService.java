@@ -33,9 +33,11 @@ public class ProductService {
         product.setCode(productDto.getCode());
         product.setDiscount(productDto.getDiscount());
 
-        fileService.fileUpload(files, product.getId());
+        productRepository.save(product);
 
-        return productRepository.save(product);
+        fileService.fileUpload(files, product);
+
+        return product;
     }
 
     public Product findById(Long id) {
