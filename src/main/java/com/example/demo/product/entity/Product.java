@@ -1,6 +1,7 @@
 package com.example.demo.product.entity;
 
 import com.example.demo.base.entity.BaseEntity;
+import com.example.demo.file.entity.FileUploadEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.PostLoad;
@@ -11,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -37,5 +39,7 @@ public class Product extends BaseEntity {
     private boolean deleted;
 
     private LocalDateTime updateDt;
+
+    private List<FileUploadEntity> fileList;
 
 }
