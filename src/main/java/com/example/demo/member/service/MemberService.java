@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -17,7 +19,6 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     public void join(MemberDto memberDto) {
-
 
         Member member = Member.builder()
                 .username(memberDto.getUsername())
@@ -41,5 +42,13 @@ public class MemberService {
 
     public Member findByUsernameAndPassword(String username, String password) {
         return memberRepository.findByUsernameAndPassword(username, password);
+    }
+
+    public List<Member> getAll() {
+        return memberRepository.findAll();
+    }
+
+    public Member findByUsername(String name) {
+        return memberRepository.findByUsername(name);
     }
 }

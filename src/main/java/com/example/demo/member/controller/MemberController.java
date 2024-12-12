@@ -5,6 +5,8 @@ import com.example.demo.member.entity.Member;
 import com.example.demo.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -67,5 +69,16 @@ public class MemberController {
     @PostMapping("/logout")
     public String logout() {
         return "redirect:/";
+    }
+
+    @GetMapping("/mypage/me")
+    public String meForm(@AuthenticationPrincipal User user, Model model) {
+
+        Member member = memberService.findByUsername(user.getUsername());
+
+        model.addAttribute("member", member);
+
+        System.out.println(user.getUsername());
+        return "member/me";
     }
 }
