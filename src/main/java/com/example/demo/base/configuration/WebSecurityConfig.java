@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -16,8 +15,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-
-    private final UserDetailsService userDetailsService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -35,18 +32,19 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/**").permitAll()
+                        .requestMatchers("/member/join", "/member/login", "/product/list", "/product/detail/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/member/login")
-                        .loginProcessingUrl("/member/login")
-                        .defaultSuccessUrl("/")
-                        .failureUrl("/member/login?error")
+//                        .loginProcessingUrl("/member/login")
+                        .defaultSuccessUrl("/", true)
+//                        .failureUrl("/member/login?error")
                         .permitAll()
                 )
                 .logout((logout) -> logout
                         .logoutUrl("/member/logout")
-                        .logoutSuccessUrl("/")
+                        .logoutSuccessUrl("/member/login")
                         .invalidateHttpSession(true)
                 );
         return http.build();
