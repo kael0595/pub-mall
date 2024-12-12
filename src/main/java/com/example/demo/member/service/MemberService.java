@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -50,5 +51,17 @@ public class MemberService {
 
     public Member findByUsername(String name) {
         return memberRepository.findByUsername(name);
+    }
+
+    public void modify(Member member, MemberDto memberDto) {
+        member.setNickname(memberDto.getNickname());
+        member.setEmail(memberDto.getEmail());
+        member.setPhone(memberDto.getPhone());
+        member.setName(memberDto.getName());
+        member.setAddr1(memberDto.getAddr1());
+        member.setAddr2(memberDto.getAddr2());
+        member.setPassword(passwordEncoder.encode(memberDto.getPassword1()));
+        member.setUpdateDt(LocalDateTime.now());
+        memberRepository.save(member);
     }
 }

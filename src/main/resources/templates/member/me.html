@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+</head>
+<body>
+<center>
+    <h1>마이페이지</h1>
+    <form th:action="@{/member/mypage/modify}" th:object="${memberDto}" method="post">
+        <div>
+            <label for="username">아이디</label>
+            <input type="text" th:field="*{username}" readonly id="username">
+        </div>
+        <div>
+            <label for="name">이름</label>
+            <input type="text" th:field="*{name}" id="name">
+        </div>
+        <div>
+            <label for="password1">비밀번호</label>
+            <input type="password" th:field="*{password1}" id="password1">
+        </div>
+        <div>
+            <label for="password2">비밀번호 확인</label>
+            <input type="password" th:field="*{password2}" id="password2">
+        </div>
+        <div>
+            <label for="nickname">닉네임</label>
+            <input type="text" th:field="*{nickname}" id="nickname">
+        </div>
+        <div>
+            <label for="email">이메일</label>
+            <input type="text" th:field="*{email}" id="email">
+        </div>
+        <div>
+            <label for="phone">전화번호</label>
+            <input type="text" th:field="*{phone}" id="phone">
+        </div>
+        <div>
+            <label for="addr1">기본주소</label>
+            <input type="text" th:field="*{addr1}" readonly id="addr1">
+        </div>
+        <div>
+            <label for="addr2">상세주소</label>
+            <input type="text" th:field="*{addr2}" readonly id="addr2">
+        </div>
+        <button>수정하기</button>
+        <button>취소</button>
+    </form>
+</center>
+</body>
+</html>
