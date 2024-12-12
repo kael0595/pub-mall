@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +53,7 @@ public class FileService {
 
     public void delete(FileUploadEntity file) {
         file.setDeleted(true);
+        file.setDeleteDt(LocalDateTime.now());
         fileRepository.save(file);
     }
 }
