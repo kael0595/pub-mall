@@ -29,7 +29,7 @@ public class FileService {
         if (!chkFile.exists()) {
             chkFile.mkdirs();
         }
-        if (files.length > 1) {
+        if (!files[0].isEmpty()) {
             try {
                 for (MultipartFile file : files) {
                     String fileName = file.getOriginalFilename();
