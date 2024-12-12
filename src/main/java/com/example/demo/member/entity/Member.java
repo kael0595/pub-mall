@@ -3,6 +3,7 @@ package com.example.demo.member.entity;
 import com.example.demo.base.entity.BaseEntity;
 import com.example.demo.product.entity.Product;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,25 +23,32 @@ import java.util.List;
 public class Member extends BaseEntity {
 
     @NotNull
+    @NotEmpty
     @Column(unique = true)
     private String username;
 
     @NotNull
+    @NotEmpty
     private String name;
 
     @NotNull
+    @NotEmpty
     private String password;
 
     @NotNull
+    @NotEmpty
     private String phone;
 
     @NotNull
+    @NotEmpty
     private String email;
 
     @NotNull
+    @NotEmpty
     private String nickname;
 
     @NotNull
+    @NotEmpty
     private String addr1;
 
     private String addr2;
