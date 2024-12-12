@@ -39,7 +39,7 @@ public class UserSecurityService implements UserDetailsService {
         if ("admin".startsWith(username)) {
             authorities.add(new SimpleGrantedAuthority(Grade.ADMIN.getValue()));
         } else {
-            authorities.add(new SimpleGrantedAuthority(Grade.USER.getValue()));
+            authorities.add(new SimpleGrantedAuthority(Grade.BRONZE.getValue()));
         }
 
         return new User(member.getUsername(), member.getPassword(), authorities);
