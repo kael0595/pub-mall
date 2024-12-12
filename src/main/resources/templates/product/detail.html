@@ -60,8 +60,12 @@
         <span th:text="${product.updateDt}"></span>
     </div>
     <div>
-        <a th:href="@{|/product/modify/${product.id}}">수정하기</a>
-        <a th:href="@{|/product/delete/${product.id}}">삭제하기</a>
+        <a th:href="@{|/product/modify/${product.id}}">
+            <button>수정하기</button>
+        </a>
+        <a th:href="@{|/product/delete/${product.id}}">
+            <button>삭제하기</button>
+        </a>
     </div>
 
 </center>
