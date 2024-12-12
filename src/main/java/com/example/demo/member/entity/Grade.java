@@ -6,7 +6,9 @@ import lombok.Getter;
 public enum Grade {
 
     ADMIN("ROLE_ADMIN"),
-    USER("ROLE_USER");
+    BRONZE("ROLE_BRONZE"),
+    SILVER("ROLE_SILVER"),
+    GOLD("ROLE_GOLD");
 
     private final String value;
 

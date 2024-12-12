@@ -33,7 +33,7 @@ public class MemberService {
         if (member.getUsername().startsWith("admin")) {
             member.setGrade(Grade.ADMIN);
         } else {
-            member.setGrade(Grade.USER);
+            member.setGrade(Grade.BRONZE);
         }
 
         memberRepository.save(member);
