@@ -32,7 +32,7 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/member/join", "/member/login", "/product/list", "/product/detail/**").permitAll()
+                        .requestMatchers("/","/member/join", "/member/login", "/product/list", "/product/detail/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
