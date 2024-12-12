@@ -42,7 +42,7 @@ public class MemberController {
 
         memberService.join(memberDto);
 
-        return "redirect:/";
+        return "redirect:/member/login";
     }
 
     @GetMapping("/login")
