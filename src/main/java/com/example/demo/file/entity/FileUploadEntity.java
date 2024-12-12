@@ -32,6 +32,10 @@ public class FileUploadEntity extends BaseEntity {
 
     private int size;
 
+    private boolean deleted;
+
+    private LocalDateTime deleteDt;
+
     private LocalDateTime updateDt;
 
     @ManyToOne
