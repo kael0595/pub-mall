@@ -4,6 +4,7 @@ import com.example.demo.base.entity.BaseEntity;
 import com.example.demo.file.entity.FileUploadEntity;
 import com.example.demo.member.entity.Member;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,6 +29,7 @@ public class Product extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     @NotNull
+    @NotBlank
     private String code;
 
     @Column(nullable = false)
@@ -40,9 +42,13 @@ public class Product extends BaseEntity {
 
     @Column(nullable = false)
     @NotNull
-    private int price;
+    private int standardPrice;
 
+    @Column(nullable = false)
+    @NotNull
     private int discount;
+
+    private int salePrice;
 
     private int viewCount;
 
@@ -55,5 +61,10 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
     private List<FileUploadEntity> fileList;
+
+    public void calculateSalePrice() {
+       salePrice = this.standardPrice - (standardPrice * discount / 100);
+    }
+
 
 }

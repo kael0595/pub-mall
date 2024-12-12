@@ -13,7 +13,7 @@ public class ProductDto {
 
     private String description;
 
-    private int price;
+    private int standardPrice;
 
     private int discount;
 }

@@ -57,6 +57,8 @@ public class ProductController {
 
         Product product = productService.add(user, productDto, files);
 
+        System.out.println(product.getSalePrice());
+
         return "redirect:/product/list";
 
     }
@@ -80,7 +82,8 @@ public class ProductController {
     }
 
     @PostMapping("/modify/{id}")
-    public String modify(@PathVariable("id") Long id,
+    public String modify(@AuthenticationPrincipal User user,
+                         @PathVariable("id") Long id,
                          @Valid @ModelAttribute ProductDto productDto,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -89,7 +92,9 @@ public class ProductController {
 
         Product product = productService.findById(id);
 
-        productService.modify(product, productDto);
+        Member member = memberService.findByUsername(user.getUsername());
+
+        productService.modify(member, product, productDto);
 
 
         return "redirect:/product/detail/" + product.getId();

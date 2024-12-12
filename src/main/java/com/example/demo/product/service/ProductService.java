@@ -28,21 +28,21 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product add(User user, ProductDto productDto, MultipartFile[] files)  throws IOException {
+    public Product add(User user, ProductDto productDto, MultipartFile[] files) throws IOException {
 
         Member member = memberRepository.findByUsername(user.getUsername());
 
         Product product = new Product();
         product.setName(productDto.getName());
-        product.setPrice(productDto.getPrice());
+        product.setStandardPrice(productDto.getStandardPrice());
         product.setCategory(productDto.getCategory());
         product.setDescription(productDto.getDescription());
         product.setCode(productDto.getCode());
         product.setDiscount(productDto.getDiscount());
+        product.calculateSalePrice();
         product.setMember(member);
 
         productRepository.save(product);
-
         fileService.fileUpload(files, product);
 
         return product;
@@ -57,15 +57,18 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public void modify(Product product, ProductDto productDto) {
+    public void modify(Member member, Product product, ProductDto productDto) {
 
         product.setName(productDto.getName());
-        product.setPrice(productDto.getPrice());
+        product.setStandardPrice(productDto.getStandardPrice());
         product.setCategory(productDto.getCategory());
         product.setDescription(productDto.getDescription());
         product.setCode(productDto.getCode());
-        product.setDiscount(productDto.getDiscount());
+        product.setDiscount(productDto.getDiscount() / 100);
+        product.calculateSalePrice();
+        product.setMember(member);
         productRepository.save(product);
+
 
     }
 
