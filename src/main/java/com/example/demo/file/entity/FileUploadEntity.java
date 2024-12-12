@@ -32,7 +32,7 @@ public class FileUploadEntity extends BaseEntity {
 
     private int size;
 
-    private boolean deleted;
+    private boolean deleted = false;
 
     private LocalDateTime deleteDt;
 
