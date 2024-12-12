@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -44,9 +45,11 @@ public class Member extends BaseEntity {
 
     private String addr2;
 
+    @Enumerated(EnumType.STRING)
     private Grade grade;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Product> productList;
 
+    private LocalDateTime updateDt;
 }
