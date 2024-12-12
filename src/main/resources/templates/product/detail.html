@@ -19,10 +19,14 @@
         <span th:text="${product.code}"></span>
     </div>
     <div>
+        <div th:if="${product.fileList.size() > 0}">
             <div th:each="img : ${product.fileList}">
-                <img th:src="@{${img.filePath}}" alt="Product Image">
-                <a th:href="@{|/product/fileDelete/${img.id}}">삭제</a>
+                <div th:if="${img.deleted != true}">
+                    <img th:src="@{${img.filePath}}" alt="Product Image">
+                    <a th:href="@{|/product/fileDelete/${img.id}}">삭제</a>
+                </div>
             </div>
+        </div>
     </div>
     <div>
         <span>카테고리</span>
