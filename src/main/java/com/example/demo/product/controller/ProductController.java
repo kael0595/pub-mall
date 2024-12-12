@@ -2,11 +2,15 @@ package com.example.demo.product.controller;
 
 import com.example.demo.file.entity.FileUploadEntity;
 import com.example.demo.file.service.FileService;
+import com.example.demo.member.entity.Member;
+import com.example.demo.member.service.MemberService;
 import com.example.demo.product.dto.ProductDto;
 import com.example.demo.product.entity.Product;
 import com.example.demo.product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +29,8 @@ public class ProductController {
 
     private final FileService fileService;
 
+    private final MemberService memberService;
+
     @GetMapping("/list")
     public String list(Model model) {
         List<Product> productList = productService.findAll();
@@ -40,7 +46,8 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public String add(@Valid @ModelAttribute ProductDto productDto,
+    public String add(@AuthenticationPrincipal User user,
+                      @Valid @ModelAttribute ProductDto productDto,
                       BindingResult bindingResult,
                       @RequestPart("files") MultipartFile[] files) throws IOException {
 
@@ -48,7 +55,7 @@ public class ProductController {
             return "product/add";
         }
 
-        Product product = productService.add(productDto, files);
+        Product product = productService.add(user, productDto, files);
 
         return "redirect:/product/list";
 

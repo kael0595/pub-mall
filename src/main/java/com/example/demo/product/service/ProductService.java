@@ -1,10 +1,13 @@
 package com.example.demo.product.service;
 
 import com.example.demo.file.service.FileService;
+import com.example.demo.member.entity.Member;
+import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.product.dto.ProductDto;
 import com.example.demo.product.entity.Product;
 import com.example.demo.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,11 +22,15 @@ public class ProductService {
 
     private final FileService fileService;
 
+    private final MemberRepository memberRepository;
+
     public List<Product> findAll() {
         return productRepository.findAll();
     }
 
-    public Product add(ProductDto productDto, MultipartFile[] files)  throws IOException {
+    public Product add(User user, ProductDto productDto, MultipartFile[] files)  throws IOException {
+
+        Member member = memberRepository.findByUsername(user.getUsername());
 
         Product product = new Product();
         product.setName(productDto.getName());
@@ -32,6 +39,7 @@ public class ProductService {
         product.setDescription(productDto.getDescription());
         product.setCode(productDto.getCode());
         product.setDiscount(productDto.getDiscount());
+        product.setMember(member);
 
         productRepository.save(product);
 
