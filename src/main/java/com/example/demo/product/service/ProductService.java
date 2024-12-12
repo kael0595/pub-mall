@@ -64,7 +64,7 @@ public class ProductService {
         product.setCategory(productDto.getCategory());
         product.setDescription(productDto.getDescription());
         product.setCode(productDto.getCode());
-        product.setDiscount(productDto.getDiscount() / 100);
+        product.setDiscount(productDto.getDiscount());
         product.calculateSalePrice();
         product.setMember(member);
         productRepository.save(product);

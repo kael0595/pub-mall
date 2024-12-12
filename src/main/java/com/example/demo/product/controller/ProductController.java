@@ -57,8 +57,6 @@ public class ProductController {
 
         Product product = productService.add(user, productDto, files);
 
-        System.out.println(product.getSalePrice());
-
         return "redirect:/product/list";
 
     }
