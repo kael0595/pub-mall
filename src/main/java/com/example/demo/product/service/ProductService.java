@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -66,6 +67,7 @@ public class ProductService {
         product.setCode(productDto.getCode());
         product.setDiscount(productDto.getDiscount());
         product.calculateSalePrice();
+        product.setUpdateDt(LocalDateTime.now());
         product.setMember(member);
         productRepository.save(product);
 
