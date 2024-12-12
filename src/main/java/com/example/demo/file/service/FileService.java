@@ -29,26 +29,32 @@ public class FileService {
         if (!chkFile.exists()) {
             chkFile.mkdirs();
         }
+        try {
+            for (MultipartFile file : files) {
+                String fileName = file.getOriginalFilename();
+                String ext = FilenameUtils.getExtension(String.valueOf(new File(file.getOriginalFilename())));
+                String saveFileName = String.valueOf(System.currentTimeMillis()) + "." + ext;
+                int fileSize = (int) file.getSize();
 
-        for (MultipartFile file : files) {
-            String fileName = file.getOriginalFilename();
-            String ext = FilenameUtils.getExtension(String.valueOf(new File(file.getOriginalFilename())));
-            String newFileName = String.valueOf(System.currentTimeMillis()) + "." + ext;
-            int fileSize = (int) file.getSize();
+                file.transferTo(new File(filePath, saveFileName));
 
-            file.transferTo(new File(filePath, newFileName));
+                FileUploadEntity fileUpload = new FileUploadEntity();
+                fileUpload.setFileName(saveFileName);
+                fileUpload.setOriginalName(fileName);
+                fileUpload.setSize(fileSize);
+                fileUpload.setExt(ext);
+                fileUpload.setFilePath("/uploads/" + saveFileName);
+                fileUpload.setProduct(product);
 
-            FileUploadEntity fileUpload = new FileUploadEntity();
-            fileUpload.setFileName(newFileName);
-            fileUpload.setOriginalName(fileName);
-            fileUpload.setSize(fileSize);
-            fileUpload.setExt(ext);
-            fileUpload.setFilePath("/uploads/" + newFileName);
-            fileUpload.setProduct(product);
+                fileRepository.save(fileUpload);
 
-            fileRepository.save(fileUpload);
-
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     public void delete(FileUploadEntity file) {
