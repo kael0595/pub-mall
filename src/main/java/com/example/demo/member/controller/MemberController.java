@@ -77,11 +77,7 @@ public class MemberController {
     public String meForm(@AuthenticationPrincipal User user,
                          Model model) {
 
-        System.out.println(user.getUsername());
-
         Member member = memberService.findByUsername(user.getUsername());
-
-        System.out.println(member.getUsername());
 
         MemberDto memberDto = new MemberDto();
         memberDto.setUsername(member.getUsername());
