@@ -36,7 +36,7 @@
                     <button>회원탈퇴</button>
                 </a>
             </td>
-            <td th:text="${member.deleted}"></td>
+            <td th:text="${member.deleted == true ? '탈퇴' : '회원'}"></td>
         </tr>
         </tbody>
     </table>
