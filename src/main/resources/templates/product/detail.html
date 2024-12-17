@@ -22,7 +22,9 @@
         <div th:if="${product.fileList.size() > 0}">
             <div th:each="img : ${product.fileList}">
                 <div th:if="${img.deleted != true}">
-                    <img th:src="@{${img.filePath}}" alt="Product Image">
+                    <img th:src="@{${img.filePath}}" alt="Product Image" id="img" name="img" style="height: 250px"
+                         width="250px">
+                    <span th:text="${img.size}"></span><span>KB</span>
                     <a th:href="@{|/product/fileDelete/${img.id}}">
                         <button>삭제</button>
                     </a>
