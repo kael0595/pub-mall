@@ -56,6 +56,8 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Grade grade;
 
+    private boolean deleted;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Product> productList;
 
