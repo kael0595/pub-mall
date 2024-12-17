@@ -6,7 +6,6 @@ import com.example.demo.member.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -129,9 +128,9 @@ public class MemberController {
         return "redirect:/member/logout";
     }
 
-    @PostMapping("/idCheck/{username}")
+    @PostMapping("/idCheck")
     @ResponseBody
-    public int idCheck(@PathVariable("username") String username){
+    public int idCheck(@RequestParam("username") String username){
 
         Member member = memberService.findByUsername(username);
 

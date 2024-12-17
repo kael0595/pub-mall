@@ -12,6 +12,12 @@
     .id_ok, .id_already, .pw_diff, .pw_ok {
         display: none;
     }
+    .id_ok, .pw_ok {
+        color: blue;
+    }
+    .id_already, .pw_diff {
+        color: red;
+    }
 </style>
 <body>
 <center>
@@ -81,7 +87,8 @@
 
         $.ajax({
             type: "post",
-            url: "/member/idCheck/" + username,
+            url: "/member/idCheck",
+            data: {username: username},
             success: function (cnt) {
 
                 if (cnt === 0) {
@@ -90,8 +97,8 @@
                 } else {
                     $('.id_already').show();
                     $('.id_ok').hide();
-                    alert("아이디를 다시 입력해주세요.");
-                    $('#username').val('');
+                    // alert("아이디를 다시 입력해주세요.");
+                    // $('#username').val('');
                 }
             },
             error: function () {
