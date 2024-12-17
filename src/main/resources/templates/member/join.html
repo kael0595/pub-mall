@@ -3,22 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <meta name="_csrf" content="${_csrf.token}">
+    <meta name="_csrf_header" content="${_csrf.headerName}">
 </head>
+<style>
+    .id_ok, .id_already, .pw_diff, .pw_ok {
+        display: none;
+    }
+</style>
 <body>
 <center>
     <h1>회원가입</h1>
     <form th:action="@{/member/join}" method="post">
         <div>
             <label for="username">아이디</label>
-            <input type="text" id="username" name="username">
+            <input type="text" id="username" name="username" oninput="idCheck()">
+            <span class="id_ok">사용 가능한 아이디입니다.</span>
+            <span class="id_already">이미 사용중인 아이디입니다.</span>
         </div>
         <div>
             <label for="password1">비밀번호</label>
-            <input type="password" id="password1" name="password1">
+            <input type="password" id="password1" name="password1" oninput="pwCheck()">
+            <span class="pw_ok">사용 가능한 비밀번호입니다.</span>
+            <span class="pw_diff">두 개의 비밀번호가 서로 다릅니다.</span>
         </div>
         <div>
             <label for="password2">비밀번호 확인</label>
-            <input type="password" id="password2" name="password2">
+            <input type="password" id="password2" name="password2" oninput="pwCheck()">
         </div>
         <div>
             <label for="name">이름</label>
@@ -44,9 +57,66 @@
             <label for="addr2">상세주소</label>
             <input type="text" id="addr2" name="addr2">
         </div>
-        <button>회원가입</button>
-        <button>취소</button>
+        <button type="submit">회원가입</button>
+        <button onclick="location.href='/'">취소</button>
     </form>
+
 </center>
 </body>
+<script>
+
+    const csrfToken = $('meta[name="_csrf"]').attr('content');
+    const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+
+    const idCheck = () => {
+
+        $('.id_ok').hide();
+        $('.id_already').hide();
+
+        var username = $('#username').val();
+
+        if (!username.trim()) {
+            return;
+        }
+
+        $.ajax({
+            type: "post",
+            url: "/member/idCheck/" + username,
+            success: function (cnt) {
+
+                if (cnt === 0) {
+                    $('.id_ok').show();
+                    $('.id_already').hide();
+                } else {
+                    $('.id_already').show();
+                    $('.id_ok').hide();
+                    alert("아이디를 다시 입력해주세요.");
+                    $('#username').val('');
+                }
+            },
+            error: function () {
+                alert("에러입니다.");
+            }
+        })
+    }
+
+    const pwCheck = () => {
+        var password1 = $('#password1').val();
+        var password2 = $('#password2').val();
+
+        if (!password1 || !password2) {
+            $('.pw_ok').hide();
+            $('.pw_diff').hide();
+            return;
+        }
+
+        if (password1 === password2) {
+            $('.pw_ok').show();
+            $('.pw_diff').hide();
+        } else {
+            $('.pw_ok').hide();
+            $('.pw_diff').show();
+        }
+    }
+</script>
 </html>

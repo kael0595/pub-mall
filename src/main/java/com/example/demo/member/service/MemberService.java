@@ -64,4 +64,14 @@ public class MemberService {
         member.setUpdateDt(LocalDateTime.now());
         memberRepository.save(member);
     }
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id).orElse(null);
+    }
+
+    public void delete(Member member) {
+        member.setDeleted(true);
+        member.setUpdateDt(LocalDateTime.now());
+        memberRepository.save(member);
+    }
 }
