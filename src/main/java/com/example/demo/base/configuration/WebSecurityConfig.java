@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 
 @Configuration
 @EnableWebSecurity
@@ -31,8 +32,12 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .headers((headers) -> headers
+                        .addHeaderWriter(new XFrameOptionsHeaderWriter(
+                                XFrameOptionsHeaderWriter.XFrameOptionsMode.DENY
+                        )))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/","/member/join", "/member/login", "/product/list", "/product/detail/**").permitAll()
+                        .requestMatchers("/","/member/join", "/member/login", "/product/list", "/product/detail/**", "/member/idCheck/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
