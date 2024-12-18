@@ -1,5 +1,8 @@
 package com.example.demo.member.controller;
 
+import com.example.demo.cart.service.CartService;
+import com.example.demo.cartItem.entity.CartItem;
+import com.example.demo.cartItem.service.CartItemService;
 import com.example.demo.member.dto.MemberDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.service.MemberService;
@@ -13,12 +16,18 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
+
+    private final CartService cartService;
+
+    private final CartItemService cartItemService;
 
     @GetMapping("/join")
     public String joinForm() {
@@ -93,6 +102,20 @@ public class MemberController {
         model.addAttribute("memberDto", memberDto);
 
         return "member/me";
+    }
+
+    @GetMapping("/mypage/me/cart")
+    public String cartList(@AuthenticationPrincipal User user,
+                       Model model) {
+        Member member = memberService.findByUsername(user.getUsername());
+
+        cartService.findOrCreateCart(member);
+
+        List<CartItem> cartItemList = cartItemService.findAll();
+
+        model.addAttribute("cartItemList", cartItemList);
+
+        return "member/cartList";
     }
 
     @PostMapping("/mypage/modify")
