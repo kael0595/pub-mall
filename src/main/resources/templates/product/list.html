@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html layout:decorate="~{/layout/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>상품목록</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
 </head>
 <body>
-<a th:href="@{|/product/add|}">
-    <button>상품 등록</button>
-</a>
-<div class="container my-3">
+
+<div layout:fragment="content" class="container my-3">
+
     <table class="table">
         <thead class="table-dark">
         <tr>
@@ -42,6 +40,9 @@
         </tr>
         </tbody>
     </table>
+    <a th:href="@{|/product/add|}">
+        <button class="btn btn-primary">상품 등록</button>
+    </a>
 </div>
 </body>
 </html>
