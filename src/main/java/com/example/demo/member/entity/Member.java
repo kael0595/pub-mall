@@ -66,8 +66,9 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Order> orderList;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-    private List<Cart> cartList;
+    @OneToOne
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
 
     private LocalDateTime updateDt;
 }
