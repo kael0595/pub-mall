@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
@@ -52,13 +53,19 @@ public class ProductController {
     public String add(@AuthenticationPrincipal User user,
                       @Valid @ModelAttribute ProductDto productDto,
                       BindingResult bindingResult,
-                      @RequestPart("files") MultipartFile[] files) throws IOException {
+                      @RequestPart("files") MultipartFile[] files,
+                      RedirectAttributes redirectAttributes) throws IOException {
 
         if (bindingResult.hasErrors()) {
             return "product/add";
         }
+        try {
+            Product product = productService.add(user, productDto, files);
 
-        Product product = productService.add(user, productDto, files);
+        } catch (IOException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "파일 업로드 중 오류가 발생하였습니다.");
+            return "redirect:/product/add";
+        }
 
         return "redirect:/product/list";
 
@@ -68,9 +75,9 @@ public class ProductController {
     public String detail(@PathVariable("id") Long id, Model model) {
 
         Product product = productService.findById(id);
+        productService.plusViewCount(product);
         model.addAttribute("product", product);
         model.addAttribute("imgList", product.getFileList());
-        productService.plusViewCount(product);
 
         return "product/detail";
     }
@@ -88,7 +95,8 @@ public class ProductController {
     public String modify(@AuthenticationPrincipal User user,
                          @PathVariable("id") Long id,
                          @Valid @ModelAttribute ProductDto productDto,
-                         BindingResult bindingResult) {
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "product/modify";
         }
@@ -96,6 +104,11 @@ public class ProductController {
         Product product = productService.findById(id);
 
         Member member = memberService.findByUsername(user.getUsername());
+
+        if (!productService.hasPermission(product, member)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "권한이 없습니다.");
+            return "redirect:/product/detail/" + id;
+        }
 
         productService.modify(member, product, productDto);
 
@@ -105,22 +118,41 @@ public class ProductController {
 
     @GetMapping("/delete/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String delete(@PathVariable("id") Long id) {
+    public String delete(@PathVariable("id") Long id,
+                         @AuthenticationPrincipal User user,
+                         RedirectAttributes redirectAttributes) {
 
         Product product = productService.findById(id);
+
+        Member member = memberService.findByUsername(user.getUsername());
+
+        if (!productService.hasPermission(product, member)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "권한이 없습니다.");
+            return "redirect:/product/detail/" + id;
+        }
 
         productService.delete(product);
         return "redirect:/product/list";
     }
 
-    @GetMapping("/fileDelete/{id}")
+    @GetMapping("/fileDelete/{fileId}")
     @PreAuthorize("isAuthenticated()")
-    public String fileDelete(@PathVariable("id") Long id) {
-        Product product = productService.findById(id);
+    public String fileDelete(@PathVariable("fileId") Long fileId,
+                             @AuthenticationPrincipal User user,
+                             RedirectAttributes redirectAttributes) {
 
-        for (FileUploadEntity file : product.getFileList()) {
-            fileService.delete(file);
+        FileUploadEntity file = fileService.findById(fileId);
+
+        Product product = file.getProduct();
+
+        Member member = memberService.findByUsername(user.getUsername());
+
+        if (!productService.hasPermission(product, member)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "권한이 없습니다.");
+            return "redirect:/product/detail/" + product.getId();
         }
+
+        fileService.delete(file);
 
         return "redirect:/product/detail/" + product.getId();
     }

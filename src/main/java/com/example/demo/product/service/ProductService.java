@@ -78,4 +78,8 @@ public class ProductService {
         product.setDeleted(true);
         productRepository.save(product);
     }
+
+    public boolean hasPermission(Product product, Member member) {
+        return product.getMember().getUsername().equals(member.getUsername());
+    }
 }
