@@ -9,6 +9,7 @@ import com.example.demo.product.entity.Product;
 import com.example.demo.product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -39,6 +40,7 @@ public class ProductController {
     }
 
     @GetMapping("/add")
+    @PreAuthorize("isAuthenticated()")
     public String addForm(ProductDto productDto,
                           Model model) {
         model.addAttribute("product", productDto);
@@ -46,6 +48,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("isAuthenticated()")
     public String add(@AuthenticationPrincipal User user,
                       @Valid @ModelAttribute ProductDto productDto,
                       BindingResult bindingResult,
@@ -73,6 +76,7 @@ public class ProductController {
     }
 
     @GetMapping("/modify/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String modifyForm(@PathVariable("id") Long id, Model model) {
         Product product = productService.findById(id);
         model.addAttribute("product", product);
@@ -80,6 +84,7 @@ public class ProductController {
     }
 
     @PostMapping("/modify/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String modify(@AuthenticationPrincipal User user,
                          @PathVariable("id") Long id,
                          @Valid @ModelAttribute ProductDto productDto,
@@ -99,6 +104,7 @@ public class ProductController {
     }
 
     @GetMapping("/delete/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String delete(@PathVariable("id") Long id) {
 
         Product product = productService.findById(id);
@@ -108,6 +114,7 @@ public class ProductController {
     }
 
     @GetMapping("/fileDelete/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String fileDelete(@PathVariable("id") Long id) {
         Product product = productService.findById(id);
 
