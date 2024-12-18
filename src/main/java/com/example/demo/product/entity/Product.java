@@ -1,8 +1,10 @@
 package com.example.demo.product.entity;
 
 import com.example.demo.base.entity.BaseEntity;
+import com.example.demo.cart.entity.Cart;
 import com.example.demo.file.entity.FileUploadEntity;
 import com.example.demo.member.entity.Member;
+import com.example.demo.order.entity.Order;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -61,6 +63,12 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
     private List<FileUploadEntity> fileList;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Cart cart;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Order order;
 
     public void calculateSalePrice() {
        salePrice = this.standardPrice - (standardPrice * discount / 100);
