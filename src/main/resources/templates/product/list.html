@@ -3,42 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>상품목록</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
 </head>
 <body>
 <a th:href="@{|/product/add|}">
     <button>상품 등록</button>
 </a>
-<table>
-    <thead>
-    <tr>
-        <th>NO.</th>
-        <th>상품명</th>
-        <th>상품코드</th>
-        <th>카테고리</th>
-        <th>상품가격</th>
-        <th>판매가격</th>
-        <th>할인율</th>
-        <th>조회수</th>
-        <th>등록일자</th>
-        <th>수정일자</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="product : ${productList}" th:if="${!product.deleted}">
-        <td th:text="${product.id}"></td>
-        <td>
-            <a th:href="@{|/product/detail/${product.id}|}" th:text="${product.name}"></a>
-        </td>
-        <td th:text="${product.code}"></td>
-        <td th:text="${product.category}"></td>
-        <td th:text="${product.standardPrice}"></td>
-        <td th:text="${product.salePrice}"></td>
-        <td th:text="${product.discount}"></td>
-        <td th:text="${product.viewCount}"></td>
-        <td th:text="${product.createDt}"></td>
-        <td th:text="${product.updateDt}"></td>
-    </tr>
-    </tbody>
-</table>
+<div class="container my-3">
+    <table class="table">
+        <thead class="table-dark">
+        <tr>
+            <th>NO.</th>
+            <th>상품명</th>
+            <th>상품코드</th>
+            <th>카테고리</th>
+            <th>상품가격</th>
+            <th>판매가격</th>
+            <th>할인율</th>
+            <th>조회수</th>
+            <th>등록일자</th>
+            <th>수정일자</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product, loop : ${productList}" th:if="${!product.deleted}">
+            <td th:text="${loop.count}"></td>
+            <td>
+                <a th:href="@{|/product/detail/${product.id}|}" th:text="${product.name}"></a>
+            </td>
+            <td th:text="${product.code}"></td>
+            <td th:text="${product.category}"></td>
+            <td th:text="${product.standardPrice}"></td>
+            <td th:text="${product.salePrice}"></td>
+            <td th:text="${product.discount}"></td>
+            <td th:text="${product.viewCount}"></td>
+            <td th:text="${#temporals.format(product.createDt, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${#temporals.format(product.updateDt, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>
