@@ -65,4 +65,8 @@ public class FileService {
         file.setDeleteDt(LocalDateTime.now());
         fileRepository.save(file);
     }
+
+    public FileUploadEntity findById(Long fileId) {
+        return fileRepository.findById(fileId).orElse(null);
+    }
 }
