@@ -6,6 +6,7 @@ import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.product.dto.ProductDto;
 import com.example.demo.product.entity.Product;
 import com.example.demo.product.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    @Transactional
     public Product add(User user, ProductDto productDto, MultipartFile[] files) throws IOException {
 
         Member member = memberRepository.findByUsername(user.getUsername());
