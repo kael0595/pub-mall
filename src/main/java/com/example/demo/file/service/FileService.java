@@ -39,13 +39,14 @@ public class FileService {
 
                     file.transferTo(new File(filePath, saveFileName));
 
-                    FileUploadEntity fileUpload = new FileUploadEntity();
-                    fileUpload.setFileName(saveFileName);
-                    fileUpload.setOriginalName(fileName);
-                    fileUpload.setSize(fileSize);
-                    fileUpload.setExt(ext);
-                    fileUpload.setFilePath("/uploads/" + saveFileName);
-                    fileUpload.setProduct(product);
+                    FileUploadEntity fileUpload = FileUploadEntity.builder()
+                            .originalName(fileName)
+                            .fileName(saveFileName)
+                            .filePath("/uploads/" + saveFileName)
+                            .ext(ext)
+                            .size(fileSize)
+                            .product(product)
+                            .build();
 
                     fileRepository.save(fileUpload);
 
