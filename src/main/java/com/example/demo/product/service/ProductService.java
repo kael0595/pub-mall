@@ -64,18 +64,19 @@ public class ProductService {
 
     public void modify(Member member, Product product, ProductDto productDto) {
 
-        product.setName(productDto.getName());
-        product.setStandardPrice(productDto.getStandardPrice());
-        product.setCategory(productDto.getCategory());
-        product.setDescription(productDto.getDescription());
-        product.setCode(productDto.getCode());
-        product.setDiscount(productDto.getDiscount());
+        product.toBuilder()
+                .name(productDto.getName())
+                .standardPrice(productDto.getStandardPrice())
+                .category(productDto.getCategory())
+                .description(productDto.getDescription())
+                .code(productDto.getCode())
+                .discount(productDto.getDiscount())
+                .updateDt(LocalDateTime.now())
+                .member(member)
+                .build();
         product.calculateSalePrice();
-        product.setUpdateDt(LocalDateTime.now());
-        product.setMember(member);
+
         productRepository.save(product);
-
-
     }
 
     public void delete(Product product) {
