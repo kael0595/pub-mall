@@ -14,8 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/cart")
@@ -29,13 +27,15 @@ public class CartController {
 
     @GetMapping("/list")
     @PreAuthorize("isAuthenticated()")
-    public String list(Model model) {
+    public String viewCart(@AuthenticationPrincipal User user, Model model) {
 
-        List<Cart> cartList = cartService.findAll();
+        Member member = memberService.findByUsername(user.getUsername());
 
-        model.addAttribute("cartList", cartList);
+        Cart cart = cartService.findByMember(member);
 
-        return "cart/list";
+        model.addAttribute("cart", cart);
+
+        return "member/cartItemList";
     }
 
     @GetMapping("/add/{productId}")
@@ -50,7 +50,7 @@ public class CartController {
 
         cartService.addCartItemToCart(product, member, amount);
 
-        return "redirect:/mypage/me/cart";
+        return "redirect:/member/mypage/me/cart";
     }
 
 

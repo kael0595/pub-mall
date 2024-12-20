@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,8 +43,27 @@ public class CartService {
     @Transactional
     public void addCartItemToCart(Product product, Member member, int amount) {
         Cart cart = findOrCreateCart(member);
-        CartItem cartItem = cartItemService.createCartItem(product, cart, amount);
-        cart.addCartItem(cartItem);
+
+        // 상품이 이미 장바구니에 있는지 확인
+        Optional<CartItem> existingItemOpt = cart.getCartItemList().stream()
+                .filter(item -> item.getProduct().equals(product)) // product를 기준으로 비교
+                .findFirst();
+
+        if (existingItemOpt.isPresent()) {
+            // 상품이 존재하면 수량만 증가
+            CartItem existingItem = existingItemOpt.get();
+            existingItem.setAmount(existingItem.getAmount() + amount);
+        } else {
+            // 상품이 없으면 새로 추가
+            CartItem cartItem = cartItemService.createCartItem(product, cart, amount);
+            cart.addCartItem(cartItem);
+        }
+
+        // 한 번만 저장
         cartRepository.save(cart);
+    }
+
+    public Cart findByMember(Member member) {
+        return cartRepository.findByMember(member);
     }
 }

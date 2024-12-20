@@ -27,7 +27,7 @@
         <tbody>
         <tr th:each="cartItem : ${cartItemList}">
             <td th:each="img : ${cartItem.product.fileList}">
-                <img th:src="@{${img.filePath}}" alt="" id="img" class="img" name="img">
+                <img th:src="@{${cartItem.product.fileList[0].filePath}}" alt="" id="img" class="img" name="img">
             </td>
             <td>
                 <a th:text="${cartItem.product.name}" th:href="@{|/product/detail/${cartItem.product.id}}"></a>
