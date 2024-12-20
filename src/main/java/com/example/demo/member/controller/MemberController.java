@@ -115,7 +115,7 @@ public class MemberController {
 
         model.addAttribute("cartItemList", cartItemList);
 
-        return "member/cartList";
+        return "member/cartItemList";
     }
 
     @PostMapping("/mypage/modify")
@@ -133,6 +133,10 @@ public class MemberController {
         }
 
         Member member = memberService.findByUsername(user.getUsername());
+
+        if (!memberDto.getPassword1().equals(memberDto.getPassword2()) && (memberDto.getPassword1().isEmpty() || memberDto.getPassword2().isEmpty())) {
+            return "member/me";
+        }
 
         memberService.modify(member, memberDto);
 
