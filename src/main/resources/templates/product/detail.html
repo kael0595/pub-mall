@@ -1,97 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" layout:decorate="~{/layout/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>제품상세</title>
 </head>
 <body>
-<center>
-    <div>
-        <span>상품번호</span>
-        <span th:text="${product.id}"></span>
-    </div>
-    <div>
-        <span>상품명</span>
-        <span th:text="${product.name}"></span>
-    </div>
-    <div>
-        <span>상품코드</span>
-        <span th:text="${product.code}"></span>
-    </div>
-    <div>
-        <div th:if="${product.fileList.size() > 0}">
-            <div th:each="img : ${product.fileList}">
-                <div th:if="${img.deleted != true}">
-                    <img th:src="@{${img.filePath}}" alt="Product Image" id="img" name="img" style="height: 250px"
-                         width="250px">
-                    <span th:text="${img.size}"></span><span>KB</span>
-                    <a th:href="@{|/product/fileDelete/${img.id}}">
-                        <button>삭제</button>
-                    </a>
+<div layout:fragment="content">
+    <div class="text-center">
+        <div>
+            <span>상품번호</span>
+            <span th:text="${product.id}"></span>
+        </div>
+        <div>
+            <span>상품명</span>
+            <span th:text="${product.name}"></span>
+        </div>
+        <div>
+            <span>상품코드</span>
+            <span th:text="${product.code}"></span>
+        </div>
+        <div>
+            <div th:if="${product.fileList.size() > 0}">
+                <div th:each="img : ${product.fileList}">
+                    <div th:if="${img.deleted != true}">
+                        <img th:src="@{${img.filePath}}" alt="Product Image" id="img" name="img"
+                             style="height: 250px"
+                             width="250px">
+                        <span th:text="${img.size}"></span><span>KB</span>
+                        <a th:href="@{|/product/fileDelete/${img.id}}">
+                            <button class="btn btn-primary">삭제</button>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
+        <div>
+            <span>카테고리</span>
+            <span th:text="${product.category}"></span>
+        </div>
+        <div>
+            <span>제품설명</span>
+            <span th:text="${product.description}"></span>
+        </div>
+        <div>
+            <span>상품가격</span>
+            <span th:text="${product.standardPrice}"></span><span>원</span>
+        </div>
+        <div>
+            <span>판매가격</span>
+            <span th:text="${product.salePrice}"></span><span>원</span>
+        </div>
+        <div>
+            <span>할인율</span>
+            <span th:text="${product.discount}"></span>
+            <span>%</span>
+        </div>
+        <div>
+            <span>조회수</span>
+            <span th:text="${product.viewCount}"></span><span>회</span>
+        </div>
+        <div>
+            <span>등록일자</span>
+            <span th:text="${#temporals.format(product.createDt, 'yyyy-MM-dd HH:mm')}"></span>
+        </div>
+        <div th:if="${product.updateDt ne null}">
+            <span>수정일자</span>
+            <span th:text="${#temporals.format(product.updateDt, 'yyyy-MM-dd HH:mm')}"></span>
+        </div>
+        <div>
+            <form th:action="@{|/cart/add/${product.id}}">
+                <div>
+                    <label for="amount">수량</label>
+                    <input type="number" id="amount" name="amount" min="1" value="1" style="width: 70px">
+                    <button class="btn btn-primary">장바구니 추가</button>
+                </div>
+            </form>
+        </div>
+        <div>
+            <form th:action="@{|/order/add/${product.id}}">
+                <label for="orderAmount">수량</label>
+                <input type="number" id="orderAmount" name="orderAmount" min="1" value="1" style="width: 70px">
+                <button class="btn btn-primary">주문하기</button>
+            </form>
+        </div>
+        <div>
+            <a th:href="@{|/product/modify/${product.id}}">
+                <button class="btn btn-primary">수정하기</button>
+            </a>
+            <a th:href="@{|/product/delete/${product.id}}">
+                <button class="btn btn-primary">삭제하기</button>
+            </a>
+        </div>
     </div>
-    <div>
-        <span>카테고리</span>
-        <span th:text="${product.category}"></span>
-    </div>
-    <div>
-        <span>제품설명</span>
-        <span th:text="${product.description}"></span>
-    </div>
-    <div>
-        <span>상품가격</span>
-        <span th:text="${product.standardPrice}"></span>
-    </div>
-    <div>
-        <span>판매가격</span>
-        <span th:text="${product.salePrice}"></span>
-    </div>
-    <div>
-        <span>할인율</span>
-        <span th:text="${product.discount}"></span>
-        <span>%</span>
-    </div>
-    <div>
-        <span>조회수</span>
-        <span th:text="${product.viewCount}"></span>
-    </div>
-    <div>
-        <span>등록일자</span>
-        <span th:text="${product.createDt}"></span>
-    </div>
-    <div>
-        <span>수정일자</span>
-        <span th:text="${product.updateDt}"></span>
-    </div>
-    <div>
-        <form th:action="@{|/cart/add/${product.id}}">
-            <div>
-                <label for="amount">수량</label>
-                <input type="number" id="amount" name="amount" min="1" value="1">
-            </div>
-            <div>
-                <button>장바구니 추가</button>
-            </div>
-        </form>
-    </div>
-    <div>
-        <form th:action="@{|/order/add/${product.id}}">
-            <label for="orderAmount">수량</label>
-            <input type="number" id="orderAmount" name="orderAmount" min="1" value="1">
-        </form>
-        <button>주문하기</button>
-    </div>
-    <div>
-        <a th:href="@{|/product/modify/${product.id}}">
-            <button>수정하기</button>
-        </a>
-        <a th:href="@{|/product/delete/${product.id}}">
-            <button>삭제하기</button>
-        </a>
-    </div>
-
-</center>
+</div>
 </body>
 </html>
