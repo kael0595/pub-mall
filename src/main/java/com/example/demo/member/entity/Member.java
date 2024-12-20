@@ -2,6 +2,7 @@ package com.example.demo.member.entity;
 
 import com.example.demo.base.entity.BaseEntity;
 import com.example.demo.cart.entity.Cart;
+import com.example.demo.cashLog.entity.CashLog;
 import com.example.demo.order.entity.Order;
 import com.example.demo.product.entity.Product;
 import jakarta.persistence.*;
@@ -65,6 +66,9 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Order> orderList;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<CashLog> cashLogList;
 
     @OneToOne
     @JoinColumn(name = "cart_id")
