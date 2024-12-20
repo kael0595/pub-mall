@@ -33,15 +33,17 @@ public class ProductService {
 
         Member member = memberRepository.findByUsername(user.getUsername());
 
-        Product product = new Product();
-        product.setName(productDto.getName());
-        product.setStandardPrice(productDto.getStandardPrice());
-        product.setCategory(productDto.getCategory());
-        product.setDescription(productDto.getDescription());
-        product.setCode(productDto.getCode());
-        product.setDiscount(productDto.getDiscount());
+        Product product = Product.builder()
+                .name(productDto.getName())
+                .standardPrice(productDto.getStandardPrice())
+                .category(productDto.getCategory())
+                .description(productDto.getDescription())
+                .discount(productDto.getDiscount())
+                .code(productDto.getCode())
+                .member(member)
+                .build();
+
         product.calculateSalePrice();
-        product.setMember(member);
 
         productRepository.save(product);
         fileService.fileUpload(files, product);
