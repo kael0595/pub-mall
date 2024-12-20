@@ -63,7 +63,7 @@
             <label for="addr2">상세주소</label>
             <input type="text" id="addr2" name="addr2">
         </div>
-        <button type="submit">회원가입</button>
+        <button type="submit" id="submitBtn">회원가입</button>
         <button onclick="location.href='/'">취소</button>
     </form>
 
@@ -165,6 +165,10 @@
         if (!validation()) {
             event.preventDefault();
         }
+
+        $('#submitBtn').prop('disabled', true);
+        return true;
     });
+
 </script>
 </html>
