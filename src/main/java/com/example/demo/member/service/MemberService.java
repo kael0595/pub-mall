@@ -54,14 +54,17 @@ public class MemberService {
     }
 
     public void modify(Member member, MemberDto memberDto) {
-        member.setNickname(memberDto.getNickname());
-        member.setEmail(memberDto.getEmail());
-        member.setPhone(memberDto.getPhone());
-        member.setName(memberDto.getName());
-        member.setAddr1(memberDto.getAddr1());
-        member.setAddr2(memberDto.getAddr2());
-        member.setPassword(passwordEncoder.encode(memberDto.getPassword1()));
-        member.setUpdateDt(LocalDateTime.now());
+
+        member.toBuilder()
+                .nickname(memberDto.getNickname())
+                .name(memberDto.getName())
+                .email(memberDto.getEmail())
+                .phone(memberDto.getPhone())
+                .addr1(memberDto.getAddr1())
+                .addr2(memberDto.getAddr2())
+                .password(passwordEncoder.encode(memberDto.getPassword1()))
+                .updateDt(LocalDateTime.now());
+
         memberRepository.save(member);
     }
 
