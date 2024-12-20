@@ -89,6 +89,9 @@
             type: "post",
             url: "/member/idCheck",
             data: {username: username},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(csrfHeader, csrfToken);
+            },
             success: function (cnt) {
 
                 if (cnt === 0) {
