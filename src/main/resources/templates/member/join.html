@@ -97,8 +97,6 @@
                 } else {
                     $('.id_already').show();
                     $('.id_ok').hide();
-                    // alert("아이디를 다시 입력해주세요.");
-                    // $('#username').val('');
                 }
             },
             error: function () {
@@ -125,5 +123,45 @@
             $('.pw_diff').show();
         }
     }
+
+    const validation = () => {
+        let isValid = true;
+
+        const requiredFields = [
+            'username',
+            'password1',
+            'password2',
+            'name',
+            'nickname',
+            'email',
+            'phone',
+            'addr1',
+            'addr2'
+        ];
+
+        requiredFields.forEach(fieldId => {
+            const field = $(`#${fieldId}`);
+            const value = field.val().trim();
+
+            if (!value) {
+                field.css('border', '2px solid red');
+                isValid = false;
+            } else {
+                field.css('border', '');
+            }
+        });
+
+        if (!isValid) {
+            alert("비어있는 입력창이 있습니다.")
+        }
+
+        return isValid;
+    };
+
+    $('form').on('submit', function (event){
+        if (!validation()) {
+            event.preventDefault();
+        }
+    });
 </script>
 </html>
