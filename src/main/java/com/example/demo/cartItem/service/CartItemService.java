@@ -16,10 +16,11 @@ public class CartItemService {
     private final CartItemRepository cartItemRepository;
 
     public CartItem createCartItem(Product product, Cart cart, int amount) {
-        CartItem cartItem = new CartItem();
-        cartItem.setProduct(product);
-        cartItem.setAmount(amount);
-        cartItem.setCart(cart);
+       CartItem cartItem = CartItem.builder()
+               .cart(cart)
+               .product(product)
+               .amount(amount)
+               .build();
         return cartItemRepository.save(cartItem);
     }
 
