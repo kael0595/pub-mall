@@ -31,9 +31,9 @@
             </td>
             <td th:text="${product.code}"></td>
             <td th:text="${product.category}"></td>
-            <td th:text="${product.standardPrice}"></td>
-            <td th:text="${product.salePrice}"></td>
-            <td th:text="${product.discount}"></td>
+            <td th:text="${product.standardPrice}"><span>원</span></td>
+            <td th:text="${product.salePrice}"><span>원</span></td>
+            <td th:text="${product.discount}"><span>%</span></td>
             <td th:text="${product.viewCount}"></td>
             <td th:text="${#temporals.format(product.createDt, 'yyyy-MM-dd HH:mm')}"></td>
             <td th:text="${#temporals.format(product.updateDt, 'yyyy-MM-dd HH:mm')}"></td>
