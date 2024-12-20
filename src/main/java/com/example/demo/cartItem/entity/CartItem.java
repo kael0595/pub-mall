@@ -15,7 +15,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class CartItem extends BaseEntity {
 
     private int amount;

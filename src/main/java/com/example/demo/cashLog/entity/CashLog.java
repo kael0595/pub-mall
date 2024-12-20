@@ -1,4 +1,4 @@
-package com.example.demo.order.entity;
+package com.example.demo.cashLog.entity;
 
 import com.example.demo.base.entity.BaseEntity;
 import com.example.demo.member.entity.Member;
@@ -10,24 +10,24 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
-@EntityListeners(AuditingEntityListener.class)
+@Data
 @SuperBuilder(toBuilder = true)
-@Table(name = "product_order")
-public class Order extends BaseEntity {
+@NoArgsConstructor
+@AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
+public class CashLog extends BaseEntity {
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Product> productList = new ArrayList<>();
+    @OneToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
-    private Integer amount;
+    private String productName;
+
+    private String customerName;
+
+    private int price;
 }
