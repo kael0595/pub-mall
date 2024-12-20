@@ -2,8 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <title>마이페이지</title>
 </head>
+<style>
+    .pw_diff, .pw_ok {
+        display: none;
+    }
+    .pw_ok {
+        color: blue;
+    }
+    .pw_diff {
+        color: red;
+    }
+</style>
 <body>
 <center>
     <h1>마이페이지</h1>
@@ -18,11 +31,13 @@
         </div>
         <div>
             <label for="password1">비밀번호</label>
-            <input type="password" th:field="*{password1}" id="password1">
+            <input type="password" th:field="*{password1}" id="password1" name="password1" oninput="pwCheck()">
+            <span class="pw_ok">사용 가능한 비밀번호입니다.</span>
+            <span class="pw_diff">두 개의 비밀번호가 서로 다릅니다.</span>
         </div>
         <div>
             <label for="password2">비밀번호 확인</label>
-            <input type="password" th:field="*{password2}" id="password2">
+            <input type="password" th:field="*{password2}" id="password2" name="password2" oninput="pwCheck()">
         </div>
         <div>
             <label for="nickname">닉네임</label>
@@ -52,4 +67,24 @@
     </form>
 </center>
 </body>
+<script>
+    const pwCheck = () => {
+        let password1 = $('#password1').val();
+        let password2 = $('#password2').val();
+
+        if (!password1 || !password2) {
+            $('.pw_ok').hide();
+            $('.pw_diff').hide();
+            return;
+        }
+
+        if (password1 === password2) {
+            $('.pw_ok').show();
+            $('.pw_diff').hide();
+        } else {
+            $('.pw_ok').hide();
+            $('.pw_diff').show();
+        }
+    }
+</script>
 </html>
