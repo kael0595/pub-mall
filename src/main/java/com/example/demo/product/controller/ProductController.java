@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -84,8 +85,11 @@ public class ProductController {
 
     @GetMapping("/modify/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String modifyForm(@PathVariable("id") Long id, Model model) {
+    public String modifyForm(@PathVariable("id") Long id,
+                             Model model,
+                             ProductDto productDto) {
         Product product = productService.findById(id);
+        model.addAttribute("productDto", productDto);
         model.addAttribute("product", product);
         return "product/modify";
     }
@@ -96,7 +100,8 @@ public class ProductController {
                          @PathVariable("id") Long id,
                          @Valid @ModelAttribute ProductDto productDto,
                          BindingResult bindingResult,
-                         RedirectAttributes redirectAttributes) {
+                         RedirectAttributes redirectAttributes,
+                         @RequestPart("files") MultipartFile[] files) throws IOException {
         if (bindingResult.hasErrors()) {
             return "product/modify";
         }
@@ -104,14 +109,27 @@ public class ProductController {
         Product product = productService.findById(id);
 
         Member member = memberService.findByUsername(user.getUsername());
+        try {
+            if (!productService.hasPermission(product, member)) {
+                redirectAttributes.addFlashAttribute("errorMessage", "권한이 없습니다.");
+                return "redirect:/product/detail/" + id;
+            }
 
-        if (!productService.hasPermission(product, member)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "권한이 없습니다.");
-            return "redirect:/product/detail/" + id;
+            if (files != null && files.length > 0) {
+                fileService.modify(files, product);
+            }
+
+            productService.modify(member, product, productDto);
+
+        } catch (IOException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "파일 업로드 중 문제가 생겼습니다.");
+            e.printStackTrace();
+            return "redirect:/product/modify/" + id;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "상품 수정 중 문제가 생겼습니다.");
+            e.printStackTrace();
+            return "redirect:/product/modify/" + id;
         }
-
-        productService.modify(member, product, productDto);
-
 
         return "redirect:/product/detail/" + product.getId();
     }

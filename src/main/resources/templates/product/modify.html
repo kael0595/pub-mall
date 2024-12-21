@@ -5,12 +5,16 @@
     <title>상품수정</title>
 </head>
 <body>
-<form th:action="@{/product/modify/{id}(id=${product.id})}" th:object="${product}" method="post">
+<form th:action="@{/product/modify/{id}(id=${product.id})}" th:object="${product}" method="post" enctype="multipart/form-data">
     <center>
         <h1>상품 수정</h1>
         <div>
             <label for="productName">상품명</label>
             <input type="text" th:field="*{name}" id="productName">
+        </div>
+        <div>
+            <label for="image">상품사진</label>
+            <input type="file" accept="image/jpeg, image/png, image/jpg" id="image" name="files" multiple>
         </div>
         <div>
             <label for="productCode">상품코드</label>
