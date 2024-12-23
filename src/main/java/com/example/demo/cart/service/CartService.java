@@ -22,12 +22,6 @@ public class CartService {
 
     private final CartItemService cartItemService;
 
-    private final MemberRepository memberRepository;
-
-    public List<Cart> findAll() {
-        return cartRepository.findAll();
-    }
-
     public Cart findOrCreateCart(Member member) {
 
         Cart cart = cartRepository.findByMember(member);
@@ -66,4 +60,5 @@ public class CartService {
     public Cart findByMember(Member member) {
         return cartRepository.findByMember(member);
     }
+
 }
