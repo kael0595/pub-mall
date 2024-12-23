@@ -1,7 +1,9 @@
 package com.example.demo.order.entity;
 
 import com.example.demo.base.entity.BaseEntity;
+import com.example.demo.cartItem.entity.CartItem;
 import com.example.demo.member.entity.Member;
+import com.example.demo.orderItem.entity.OrderItem;
 import com.example.demo.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,5 +31,17 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Product> productList = new ArrayList<>();
 
-    private Integer amount;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<OrderItem> orderItemList;
+
+    private int amount;
+
+    private int totalPrice;
+
+    private OrderStatus status;
+
+    private String shippingAddress;
+
+    private String paymentMethod;
+
 }
