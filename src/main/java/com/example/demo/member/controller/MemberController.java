@@ -1,11 +1,16 @@
 package com.example.demo.member.controller;
 
+import com.example.demo.cart.entity.Cart;
 import com.example.demo.cart.service.CartService;
 import com.example.demo.cartItem.entity.CartItem;
 import com.example.demo.cartItem.service.CartItemService;
 import com.example.demo.member.dto.MemberDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.service.MemberService;
+import com.example.demo.order.entity.Order;
+import com.example.demo.order.service.OrderService;
+import com.example.demo.orderItem.entity.OrderItem;
+import com.example.demo.orderItem.service.OrderItemService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -28,6 +34,10 @@ public class MemberController {
     private final CartService cartService;
 
     private final CartItemService cartItemService;
+
+    private final OrderItemService orderItemService;
+
+    private final OrderService orderService;
 
     @GetMapping("/join")
     public String joinForm() {
@@ -109,13 +119,37 @@ public class MemberController {
                        Model model) {
         Member member = memberService.findByUsername(user.getUsername());
 
-        cartService.findOrCreateCart(member);
+        Cart cart = cartService.findOrCreateCart(member);
 
-        List<CartItem> cartItemList = cartItemService.findAll();
+        List<CartItem> cartItemList = cartItemService.findAllByCart(cart);
 
         model.addAttribute("cartItemList", cartItemList);
+        model.addAttribute("cart", cart);
 
         return "member/cartItemList";
+    }
+
+    @GetMapping("/mypage/me/order")
+    public String orderList(@AuthenticationPrincipal User user,
+                            Model model) {
+        Member member = memberService.findByUsername(user.getUsername());
+
+        List<Order> orderList = orderService.findAllByMember(member);
+
+        List<OrderItem> orderItemList = new ArrayList<>();
+
+        for (Order order : orderList) {
+            List<OrderItem> orderItems = orderItemService.findAllByOrder(order);
+            orderItemList.addAll(orderItems);
+        }
+
+        System.out.println(orderItemList.size());
+
+        model.addAttribute("orderItemList", orderItemList);
+
+        model.addAttribute("orderList", orderList);
+
+        return "member/orderList";
     }
 
     @PostMapping("/mypage/modify")
