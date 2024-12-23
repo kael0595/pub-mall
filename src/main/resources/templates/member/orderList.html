@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<center>
+  <h1>주문목록</h1>
+  <table>
+    <thead>
+    <tr>
+      <th>주문번호</th>
+      <th></th>
+      <th>상품명</th>
+      <th>정상가격</th>
+      <th>판매가격</th>
+      <th>할인율</th>
+      <th>수량</th>
+      <th>주문상태</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="orderItem : ${orderItemList}">
+      <td th:text="${orderItem.order.id}"></td>
+      <td th:each="img : ${orderItem.product.fileList}">
+        <img th:src="@{${orderItem.product.fileList[0].filePath}}" alt="" id="img" class="img" name="img" height="100px;" width="100px;">
+      </td>
+      <td>
+        <a th:text="${orderItem.product.name}" th:href="@{|/product/detail/${orderItem.product.id}}"></a>
+      </td>
+      <td th:text="${orderItem.product.standardPrice}"></td>
+      <td th:text="${orderItem.product.salePrice}"></td>
+      <td th:text="${orderItem.product.discount}"></td>
+      <td th:text="${orderItem.amount}"></td>
+      <td th:text="${orderItem.order.status}"></td>
+    </tr>
+    </tbody>
+  </table>
+</center>
+</body>
+</html>
