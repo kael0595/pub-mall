@@ -2,6 +2,7 @@ package com.example.demo.cashLog.entity;
 
 import com.example.demo.base.entity.BaseEntity;
 import com.example.demo.member.entity.Member;
+import com.example.demo.order.entity.Order;
 import com.example.demo.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,13 +22,13 @@ public class CashLog extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @OneToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    private String productName;
-
-    private String customerName;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     private int price;
+
+    private CashLogStatus status;
+
+
 }
