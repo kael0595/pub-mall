@@ -68,7 +68,7 @@
             <span th:text="${#temporals.format(product.updateDt, 'yyyy-MM-dd HH:mm')}"></span>
         </div>
         <div>
-            <form th:action="@{|/cart/add/${product.id}}">
+            <form th:action="@{|/cart/add/${product.id}|}" method="post">
                 <div>
                     <label for="amount">수량</label>
                     <input type="number" id="amount" name="amount" min="1" value="1" style="width: 70px">
@@ -77,17 +77,18 @@
             </form>
         </div>
         <div>
-            <form th:action="@{|/order/add/${product.id}}">
+            <form th:action="@{|/order/create|}" method="post">
                 <label for="orderAmount">수량</label>
-                <input type="number" id="orderAmount" name="orderAmount" min="1" value="1" style="width: 70px">
+                <input type="number" id="orderAmount" name="amount" min="1" value="1" style="width: 70px">
+                <input type="hidden" id="productId" name="productId" th:value="${product.id}">
                 <button class="btn btn-primary">주문하기</button>
             </form>
         </div>
         <div>
-            <a th:href="@{|/product/modify/${product.id}}">
+            <a th:href="@{|/product/modify/${product.id}|}">
                 <button class="btn btn-primary">수정하기</button>
             </a>
-            <a th:href="@{|/product/delete/${product.id}}">
+            <a th:href="@{|/product/delete/${product.id}|}">
                 <button class="btn btn-primary">삭제하기</button>
             </a>
         </div>
