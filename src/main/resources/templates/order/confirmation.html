@@ -6,41 +6,46 @@
 </head>
 <body>
 <center>
-  <h1>주문목록</h1>
-  <table>
-    <thead>
-    <tr>
-      <th>주문번호</th>
-      <th></th>
-      <th>상품명</th>
-      <th>정상가격</th>
-      <th>판매가격</th>
-      <th>할인율</th>
-      <th>수량</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="orderItem : ${order.orderItemList}">
-      <td th:text="${orderItem.id}"></td>
-      <td>
-        <img th:src="@{${orderItem.product.fileList[0].filePath}}" alt="" id="img" class="img" name="img" width="100px;" height="100px;">
-      </td>
-      <td>
-        <a th:text="${orderItem.product.name}" th:href="@{|/product/detail/${orderItem.product.id}}"></a>
-      </td>
-      <td th:text="${orderItem.product.standardPrice}"></td>
-      <td th:text="${orderItem.product.salePrice}"></td>
-      <td th:text="${orderItem.product.discount}"></td>
-      <td th:text="${orderItem.amount}"></td>
-      <form th:action="@{/order/create}" method="post">
-        <input type="hidden" name="productId" th:value="${orderItem.product.id}">
-        <input type="hidden" name="amount" th:value="${orderItem.amount}">
-        <button>주문하기</button>
-      </form>
-    </tr>
-    </tbody>
+    <h1>주문목록</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>주문번호</th>
+            <th></th>
+            <th>상품명</th>
+            <th>정상가격</th>
+            <th>판매가격</th>
+            <th>할인율</th>
+            <th>수량</th>
+            <th>합계</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="orderItem : ${order.orderItemList}">
+            <td th:text="${orderItem.id}"></td>
+            <td>
+                <img th:src="@{${orderItem.product.fileList[0].filePath}}" alt="" id="img" class="img" name="img"
+                     width="100px;" height="100px;">
+            </td>
+            <td>
+                <a th:text="${orderItem.product.name}" th:href="@{|/product/detail/${orderItem.product.id}}"></a>
+            </td>
+            <td th:text="${orderItem.product.standardPrice}"></td>
+            <td th:text="${orderItem.product.salePrice}"></td>
+            <td th:text="${orderItem.product.discount}"></td>
+            <td th:text="${orderItem.amount}"></td>
+            <td th:text="${orderItem.price}"></td>
+            <td>
+                <form th:action="@{/order/create}" method="post">
+                    <input type="hidden" name="productId" th:value="${orderItem.product.id}">
+                    <input type="hidden" name="amount" th:value="${orderItem.amount}">
+                    <button>주문하기</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
 
-  </table>
+    </table>
 </center>
 </body>
 </html>
