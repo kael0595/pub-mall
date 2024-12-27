@@ -36,6 +36,14 @@
             <td th:text="${cartItem.product.salePrice}"></td>
             <td th:text="${cartItem.product.discount}"></td>
             <td th:text="${cartItem.amount}"></td>
+            <td>
+                <form th:action="@{|/order/create|}" method="post">
+                    <label for="orderAmount">수량</label>
+                    <input type="hidden" id="orderAmount" name="amount" th:value="${cartItem.amount}">
+                    <input type="hidden" id="productId" name="productId" th:value="${cartItem.product.id}">
+                    <button class="btn btn-primary">주문하기</button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>
