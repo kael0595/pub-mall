@@ -38,7 +38,7 @@ public class CartController {
         return "member/cartItemList";
     }
 
-    @GetMapping("/add/{productId}")
+    @PostMapping("/add/{productId}")
     @PreAuthorize("isAuthenticated()")
     public String addCartItem(@AuthenticationPrincipal User user,
                               @PathVariable("productId") Long productId,
