@@ -1,4 +1,7 @@
 spring:
+  profiles:
+    include: secret
+    active: dev
   application:
     name: practice
   datasource:
@@ -6,7 +9,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/test
     username: test
     password: 1111
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,3 +20,4 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+    org.springframework.security: DEBUG
