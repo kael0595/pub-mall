@@ -10,10 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,13 +31,13 @@ public class NoticeController {
         return "notice/list";
     }
 
-    @GetMapping("/notice/add")
+    @GetMapping("/add")
     public String noticeAddForm(NoticeDto noticeDto, Model model) {
         model.addAttribute("noticeDto", noticeDto);
         return "notice/add";
     }
 
-    @PostMapping("/notice/add")
+    @PostMapping("/add")
     public String noticeAdd(@AuthenticationPrincipal Member member,
                             @Valid @ModelAttribute NoticeDto noticeDto,
                             BindingResult bindingResult) {
@@ -50,6 +47,16 @@ public class NoticeController {
 
         Notice notice = noticeService.add(noticeDto, member);
         return "redirect:/notice/list";
+    }
+
+    @GetMapping("/detail/{id}")
+    public String noticeDetail(@PathVariable("id") Long id, Model model) {
+
+        Notice notice = noticeService.findById(id);
+
+        model.addAttribute("notice", notice);
+
+        return "notice/detail";
     }
 
 }
