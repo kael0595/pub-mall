@@ -6,16 +6,25 @@ import com.example.demo.cartItem.entity.CartItem;
 import com.example.demo.cartItem.service.CartItemService;
 import com.example.demo.member.dto.MemberDto;
 import com.example.demo.member.entity.Member;
+import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.member.service.MemberService;
 import com.example.demo.order.entity.Order;
 import com.example.demo.order.service.OrderService;
 import com.example.demo.orderItem.entity.OrderItem;
 import com.example.demo.orderItem.service.OrderItemService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,6 +36,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/member")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -38,6 +48,14 @@ public class MemberController {
     private final OrderItemService orderItemService;
 
     private final OrderService orderService;
+
+    private final MemberRepository memberRepository;
+
+    @Value("${spring.security.oauth2.client.registration.kakao.client_id}")
+    private String client_id;
+
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect_uri}")
+    private String redirect_uri;
 
     @GetMapping("/join")
     public String joinForm() {
@@ -52,7 +70,7 @@ public class MemberController {
             return "member/join";
         }
 
-        if (!memberDto.getPassword1().equals(memberDto.getPassword2())) {
+        if (!memberDto.getPassword().equals(memberDto.getPasswordCnf())) {
             return "member/join";
         }
 
@@ -61,31 +79,61 @@ public class MemberController {
         return "redirect:/member/login";
     }
 
-    @GetMapping("/login")
-    public String loginForm() {
+    @GetMapping("/loginForm")
+    public String loginForm(Model model,
+                            @AuthenticationPrincipal Member member,
+                            @AuthenticationPrincipal OAuth2User oauth2User) {
+
+        if (member != null || oauth2User != null) {
+            return "redirect:/";
+        }
+
         return "member/login";
     }
 
     @PostMapping("/login")
-    public String login(@Valid MemberDto memberDto,
-                        BindingResult bindingResult,
-                        Model model) {
+    public String login(@Valid @ModelAttribute MemberDto memberDto,
+                        BindingResult bindingResult, Model model,
+                        HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
+            model.addAttribute("error", "로그인 실패! 아이디나 비밀번호를 확인하세요.");
             return "member/login";
         }
 
-        Member member = memberService.findByUsernameAndPassword(memberDto.getUsername(), memberDto.getPassword1());
+        try {
+            log.info("memberDto: {}", memberDto.toString());
+            Member member = memberService.login(memberDto.getUsername(), memberDto.getPassword());
 
-        if (member == null) {
-            model.addAttribute("member not found", "사용자를 찾을 수 없습니다.");
+            if (member == null) {
+                model.addAttribute("error", "사용자를 찾을 수 없습니다.");
+                return "member/login";
+            }
+
+            if (member.isDeleted()) {
+                model.addAttribute("error", "삭제된 계정입니다.");
+                return "member/login";
+            }
+
+            List<GrantedAuthority> authorities = new ArrayList<>();
+
+            authorities.add(new SimpleGrantedAuthority(member.getGrade().getValue()));
+
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    member, null, authorities);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // 세션에 인증 정보를 저장
+            HttpSession session = request.getSession();
+            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+
+            return "redirect:/";
+
+        } catch (Exception e) {
+            log.error("로그인 처리 중 오류 발생: ", e);
+            model.addAttribute("error", "로그인 처리 중 오류가 발생했습니다.");
             return "member/login";
         }
-
-        if (member.isDeleted()) {
-            return "redirect:/member/login";
-        }
-        return "redirect:/";
     }
 
     @PostMapping("/logout")
@@ -95,28 +143,47 @@ public class MemberController {
 
     @GetMapping("/mypage/me")
     public String meForm(@AuthenticationPrincipal User user,
+                         @AuthenticationPrincipal OAuth2User oAuth2User,
                          Model model) {
 
-        Member member = memberService.findByUsername(user.getUsername());
+        if (user != null) {
+            Member member = memberService.findByUsername(user.getUsername());
 
-        MemberDto memberDto = new MemberDto();
-        memberDto.setUsername(member.getUsername());
-        memberDto.setName(member.getName());
-        memberDto.setNickname(member.getNickname());
-        memberDto.setEmail(member.getEmail());
-        memberDto.setPhone(member.getPhone());
-        memberDto.setAddr1(member.getAddr1());
-        memberDto.setAddr2(member.getAddr2());
+            MemberDto memberDto = new MemberDto();
+            memberDto.setUsername(member.getUsername());
+            memberDto.setName(member.getName());
+            memberDto.setNickname(member.getNickname());
+            memberDto.setEmail(member.getEmail());
+            memberDto.setPhone(member.getPhone());
+            memberDto.setAddr1(member.getAddr1());
+            memberDto.setAddr2(member.getAddr2());
 
-        model.addAttribute("member", member);
-        model.addAttribute("memberDto", memberDto);
+            model.addAttribute("member", member);
+            model.addAttribute("memberDto", memberDto);
+        } else if (oAuth2User != null) {
+
+            Member member = memberService.findByProviderId(oAuth2User.getName());
+
+            MemberDto memberDto = new MemberDto();
+            memberDto.setUsername(member.getUsername());
+            memberDto.setName(member.getName());
+            memberDto.setNickname(member.getNickname());
+            memberDto.setEmail(member.getEmail());
+            memberDto.setPhone(member.getPhone());
+            memberDto.setAddr1(member.getAddr1());
+            memberDto.setAddr2(member.getAddr2());
+
+            model.addAttribute("member", member);
+            model.addAttribute("memberDto", memberDto);
+        }
+
 
         return "member/me";
     }
 
     @GetMapping("/mypage/me/cart")
     public String cartList(@AuthenticationPrincipal User user,
-                       Model model) {
+                           Model model) {
         Member member = memberService.findByUsername(user.getUsername());
 
         Cart cart = cartService.findOrCreateCart(member);
@@ -162,13 +229,13 @@ public class MemberController {
             return "member/me";
         }
 
-        if (!memberDto.getPassword1().equals(memberDto.getPassword2())) {
+        if (!memberDto.getPassword().equals(memberDto.getPasswordCnf())) {
             return "member/me";
         }
 
         Member member = memberService.findByUsername(user.getUsername());
 
-        if (!memberDto.getPassword1().equals(memberDto.getPassword2()) && (memberDto.getPassword1().isEmpty() || memberDto.getPassword2().isEmpty())) {
+        if (!memberDto.getPassword().equals(memberDto.getPasswordCnf()) && (memberDto.getPassword().isEmpty() || memberDto.getPasswordCnf().isEmpty())) {
             return "member/me";
         }
 
@@ -180,7 +247,7 @@ public class MemberController {
     }
 
     @GetMapping("/mypage/delete")
-    public String memberDelete (@AuthenticationPrincipal User user) {
+    public String memberDelete(@AuthenticationPrincipal User user) {
 
         Member member = memberService.findByUsername(user.getUsername());
 
@@ -191,11 +258,57 @@ public class MemberController {
 
     @PostMapping("/idCheck")
     @ResponseBody
-    public int idCheck(@RequestParam("username") String username){
+    public int idCheck(@RequestParam("username") String username) {
 
         Member member = memberService.findByUsername(username);
 
         return (member != null) ? 1 : 0;
+    }
+
+    @GetMapping("/update-email")
+    public String updateEmail() {
+        return "member/update-email";
+    }
+
+    @PostMapping("/update-email")
+    public String updateEmail(@RequestParam("email") String email,
+                              @AuthenticationPrincipal OAuth2User oAuth2User) {
+
+        String provider = "";
+
+        String providerId = "";
+
+        if ("kakao".equals(oAuth2User.getAttributes().get("provider"))) {
+            provider = "kakao";
+            providerId = (String) oAuth2User.getAttributes().get("id");
+        } else if ("naver".equals(oAuth2User.getAttributes().get("provider"))) {
+            provider = "naver";
+            providerId = (String) oAuth2User.getAttributes().get("response");
+        } else if ("google".equals(oAuth2User.getAttributes().get("provider"))) {
+            provider = "google";
+            providerId = (String) oAuth2User.getAttributes().get("sub");
+        }
+
+        log.info("provider: " + provider);
+
+        log.info("providerId: " + providerId);
+
+        Member member = memberService.findByProviderId(provider);
+
+//        if (memberService.existsByEmail(email)) {
+//            return "redirect:/member/update-email?error=emailExists";
+//        }
+
+        log.info("member: " + member.toString());
+
+        if (member != null) {
+            throw new RuntimeException("해당 사용자는 찾을 수 없습니다.");
+        }
+
+        member.setEmail(email);
+        memberRepository.save(member);
+
+        return "redirect:/";
     }
 
 }
