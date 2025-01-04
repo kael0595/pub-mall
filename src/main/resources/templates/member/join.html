@@ -30,14 +30,14 @@
             <span class="id_already">이미 사용중인 아이디입니다.</span>
         </div>
         <div>
-            <label for="password1">비밀번호</label>
-            <input type="password" id="password1" name="password" oninput="pwCheck()">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" oninput="pwCheck()">
             <span class="pw_ok">사용 가능한 비밀번호입니다.</span>
             <span class="pw_diff">두 개의 비밀번호가 서로 다릅니다.</span>
         </div>
         <div>
-            <label for="password2">비밀번호 확인</label>
-            <input type="password" id="password2" name="passwordCnf" oninput="pwCheck()">
+            <label for="passwordCnf">비밀번호 확인</label>
+            <input type="password" id="passwordCnf" name="passwordCnf" oninput="pwCheck()">
         </div>
         <div>
             <label for="name">이름</label>
@@ -109,16 +109,16 @@
     }
 
     const pwCheck = () => {
-        var password1 = $('#password1').val();
-        var password2 = $('#password2').val();
+        var password = $('#password').val();
+        var passwordCnf = $('#passwordCnf').val();
 
-        if (!password1 || !password2) {
+        if (!password || !passwordCnf) {
             $('.pw_ok').hide();
             $('.pw_diff').hide();
             return;
         }
 
-        if (password1 === password2) {
+        if (password === passwordCnf) {
             $('.pw_ok').show();
             $('.pw_diff').hide();
         } else {

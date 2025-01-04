@@ -30,14 +30,14 @@
             <input type="text" th:field="*{name}" id="name">
         </div>
         <div>
-            <label for="password1">비밀번호</label>
-            <input type="password" th:field="*{password1}" id="password1" name="password1" oninput="pwCheck()">
+            <label for="password">비밀번호</label>
+            <input type="password" th:field="*{password}" id="password" name="password" oninput="pwCheck()">
             <span class="pw_ok">사용 가능한 비밀번호입니다.</span>
             <span class="pw_diff">두 개의 비밀번호가 서로 다릅니다.</span>
         </div>
         <div>
-            <label for="password2">비밀번호 확인</label>
-            <input type="password" th:field="*{password2}" id="password2" name="password2" oninput="pwCheck()">
+            <label for="passwordCnf">비밀번호 확인</label>
+            <input type="password" th:field="*{passwordCnf}" id="passwordCnf" name="passwordCnf" oninput="pwCheck()">
         </div>
         <div>
             <label for="nickname">닉네임</label>
@@ -69,16 +69,16 @@
 </body>
 <script>
     const pwCheck = () => {
-        let password1 = $('#password1').val();
-        let password2 = $('#password2').val();
+        let password = $('#password').val();
+        let passwordCnf = $('#passwordCnf').val();
 
-        if (!password1 || !password2) {
+        if (!password || !passwordCnf) {
             $('.pw_ok').hide();
             $('.pw_diff').hide();
             return;
         }
 
-        if (password1 === password2) {
+        if (password === passwordCnf) {
             $('.pw_ok').show();
             $('.pw_diff').hide();
         } else {
