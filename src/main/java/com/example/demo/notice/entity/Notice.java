@@ -6,15 +6,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 public class Notice extends BaseEntity {
 
     private String title;
@@ -23,5 +23,5 @@ public class Notice extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private Member author;
+    private Member member;
 }

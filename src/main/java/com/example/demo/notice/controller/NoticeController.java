@@ -21,6 +21,10 @@ public class NoticeController {
     public String noticeList(Model model) {
 
         List<Notice> noticeList = noticeService.findAll();
+
+        model.addAttribute("noticeList", noticeList);
+
         return "notice/list";
     }
+
 }
