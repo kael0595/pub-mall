@@ -7,6 +7,7 @@ import com.example.demo.oauth.dto.GoogleMemberInfo;
 import com.example.demo.oauth.dto.KakaoMemberInfo;
 import com.example.demo.oauth.dto.NaverMemberInfo;
 import com.example.demo.oauth.dto.Oauth2MemberInfo;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,6 +27,8 @@ public class OAuth2MemberService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
 
+    @Transactional
+    @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         log.info("OAuth2 요청 처리 시작 - Provider: {}", userRequest.getClientRegistration().getRegistrationId());
