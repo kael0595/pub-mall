@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html lang="ko" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -7,6 +7,8 @@
     <title>Title</title>
 </head>
 <body>
+<a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/member/loginForm}">로그인</a>
+<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
 <!-- 네비게이션바 -->
 <!--<nav th:replace="~{navbar :: navbarFragment}"></nav>-->
 <!-- 기본 템플릿 안에 삽입될 내용 Start -->
