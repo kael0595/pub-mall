@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<center>
+    <h1>공지사항 등록</h1>
+    <form th:action="@{/notice/add}" method="post" th:object="${noticeDto}">
+        <div>
+            <label for="title">제목</label>
+            <input type="text" name="title" id="title" th:field="*{title}">
+        </div>
+        <div>
+            <label for="content">내용</label>
+            <textarea type="text" name="content" id="content" th:field="*{content}"></textarea>
+        </div>
+        <button>등록</button>
+        <button>취소</button>
+    </form>
+</center>
+</body>
+</html>
