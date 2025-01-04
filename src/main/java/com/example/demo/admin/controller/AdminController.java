@@ -3,13 +3,16 @@ package com.example.demo.admin.controller;
 import com.example.demo.admin.service.AdminService;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.service.MemberService;
+import com.example.demo.notice.dto.NoticeDto;
+import com.example.demo.notice.entity.Notice;
+import com.example.demo.notice.service.NoticeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,6 +25,8 @@ public class AdminController {
 
     private final MemberService memberService;
 
+    private final NoticeService noticeService;
+
     @GetMapping("/memberList")
     public String memberList(Model model) {
 
@@ -32,10 +37,28 @@ public class AdminController {
     }
 
     @GetMapping("/memberDelete/{id}")
-    public String memberDelete(@PathVariable("id") Long id, Model model) {
+    public String memberDelete(@PathVariable("id") Long id) {
         Member member = memberService.findById(id);
         adminService.deleteMember(member);
         return "redirect:/admin/memberList";
+    }
+
+    @GetMapping("/notice/add")
+    public String noticeAddForm(NoticeDto noticeDto, Model model) {
+        model.addAttribute("noticeDto", noticeDto);
+        return "notice/add";
+    }
+
+    @PostMapping("/notice/add")
+    public String noticeAdd(@AuthenticationPrincipal Member member,
+                            @Valid @ModelAttribute NoticeDto noticeDto,
+                            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "notice/add";
+        }
+
+        Notice notice = noticeService.add(noticeDto, member);
+        return "redirect:/notice/list";
     }
 
 }
