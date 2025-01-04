@@ -17,7 +17,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -50,12 +49,6 @@ public class MemberController {
     private final OrderService orderService;
 
     private final MemberRepository memberRepository;
-
-    @Value("${spring.security.oauth2.client.registration.kakao.client_id}")
-    private String client_id;
-
-    @Value("${spring.security.oauth2.client.registration.kakao.redirect_uri}")
-    private String redirect_uri;
 
     @GetMapping("/join")
     public String joinForm() {
