@@ -11,9 +11,9 @@ public class MemberDto {
 
     private String name;
 
-    private String password1;
+    private String password;
 
-    private String password2;
+    private String passwordCnf;
 
     private String phone;
 
