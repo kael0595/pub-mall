@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -43,33 +44,34 @@ public class WebSecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .headers((headers) -> headers
                         .addHeaderWriter(new XFrameOptionsHeaderWriter(
-                                XFrameOptionsHeaderWriter.XFrameOptionsMode.DENY
+                                XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN
                         )))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/", "/member/join", "/member/login", "/member/login-processing",
-                                "/product/list", "/product/detail/**", "/member/idCheck/**", "/member/oauth2/**").permitAll()
+                        .requestMatchers("/", "/member/join", "/member/loginForm","/member/login",
+                                "/product/list", "/product/detail/**", "/member/idCheck/**", "/member/oauth2/**",
+                                "/favicon.ico", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/member/login")
-                        .loginProcessingUrl("/member/login")
+                        .loginPage("/member/loginForm")
+//                        .loginProcessingUrl("/member/login")
                         .defaultSuccessUrl("/", true)
+                        .failureUrl("/member/loginForm?error=true")
                         .permitAll()
                 )
+                .logout((logout) -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
+                        .logoutSuccessUrl("/member/loginForm")
+                        .invalidateHttpSession(true)
+                )
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/member/login")
-                        .defaultSuccessUrl("/", true)
-                        .failureUrl("/oauth2/error")
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(oAuth2MemberService)
                         )
-
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/member/loginForm?error=true")
                 )
-                .logout((logout) -> logout
-                        .logoutUrl("/member/logout")
-                        .logoutSuccessUrl("/member/login")
-                        .invalidateHttpSession(true)
-                );
+        ;
         return http.build();
     }
 }
