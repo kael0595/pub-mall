@@ -1,5 +1,6 @@
 package com.example.demo.base.configuration;
 
+import com.example.demo.oauth.service.OAuth2MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -16,6 +18,8 @@ import org.springframework.security.web.header.writers.frameoptions.XFrameOption
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
+
+    private final OAuth2MemberService oAuth2MemberService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -28,6 +32,11 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/logo/**");
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -37,15 +46,24 @@ public class WebSecurityConfig {
                                 XFrameOptionsHeaderWriter.XFrameOptionsMode.DENY
                         )))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/","/member/join", "/member/login", "/product/list", "/product/detail/**", "/member/idCheck/**").permitAll()
+                        .requestMatchers("/", "/member/join", "/member/login", "/member/login-processing",
+                                "/product/list", "/product/detail/**", "/member/idCheck/**", "/member/oauth2/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/member/login")
-//                        .loginProcessingUrl("/member/login")
+                        .loginProcessingUrl("/member/login")
                         .defaultSuccessUrl("/", true)
-//                        .failureUrl("/member/login?error")
                         .permitAll()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/member/login")
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/oauth2/error")
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(oAuth2MemberService)
+                        )
+
                 )
                 .logout((logout) -> logout
                         .logoutUrl("/member/logout")

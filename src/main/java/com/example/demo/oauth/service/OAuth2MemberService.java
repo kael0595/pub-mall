@@ -57,32 +57,41 @@ public class OAuth2MemberService extends DefaultOAuth2UserService {
 
         String oauth2Id = provider + "_" + providerId;
 
-        System.out.println(oAuth2User.getAttributes());
-
         String name = memberInfo.getName();
 
-        String email = "";
-
-        if (memberInfo.getEmail() == null || memberInfo.getEmail().isEmpty()) {
-            log.warn("카카오 로그인 사용자가 이메일 제공에 동의하지 않았습니다.");
-            email = "no-email@provider.com"; // 기본 이메일 값 설정
+        if (provider.equals("kakao")) {
+            Member member = memberRepository.findByOauth2Id(oauth2Id)
+                    .orElseGet(() -> {
+                        Member newMember = Member.builder()
+                                .username(oauth2Id)
+                                .oauth2Id(oauth2Id)
+                                .name(name)
+                                .isSocialLogin(true)
+                                .grade(Grade.BRONZE)
+                                .provider(provider)
+                                .providerId(providerId)
+                                .build();
+                        return memberRepository.save(newMember);
+                    });
         } else {
-            email = memberInfo.getEmail();
-        }
 
-        Member member = memberRepository.findByOauth2Id(oauth2Id)
-                .orElseGet(() -> {
-                    Member newMember = Member.builder()
-                            .username(oauth2Id)
-                            .oauth2Id(oauth2Id)
-                            .name(name)
-//                            .email(email)  // 기본 이메일 설정
-                            .grade(Grade.BRONZE)
-                            .provider(provider)
-                            .providerId(providerId)
-                            .build();
-                    return memberRepository.save(newMember);
-                });
+            String email = memberInfo.getEmail();
+
+            Member member = memberRepository.findByOauth2Id(oauth2Id)
+                    .orElseGet(() -> {
+                        Member newMember = Member.builder()
+                                .username(oauth2Id)
+                                .oauth2Id(oauth2Id)
+                                .name(name)
+                                .isSocialLogin(true)
+                                .email(email)  // 기본 이메일 설정
+                                .grade(Grade.BRONZE)
+                                .provider(provider)
+                                .providerId(providerId)
+                                .build();
+                        return memberRepository.save(newMember);
+                    });
+        }
 
         if (!oAuth2User.getAttributes().containsKey(principalKey)) {
             throw new OAuth2AuthenticationException("Principal key not found." + principalKey);
