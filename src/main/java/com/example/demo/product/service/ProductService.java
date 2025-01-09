@@ -8,7 +8,6 @@ import com.example.demo.product.entity.Product;
 import com.example.demo.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,9 +30,7 @@ public class ProductService {
     }
 
     @Transactional
-    public Product add(User user, ProductDto productDto, MultipartFile[] files) throws IOException {
-
-        Member member = memberRepository.findByUsername(user.getUsername());
+    public Product add(Member member, ProductDto productDto, MultipartFile[] files) throws IOException {
 
         Product product = Product.builder()
                 .name(productDto.getName())

@@ -9,9 +9,9 @@ import com.example.demo.product.entity.Product;
 import com.example.demo.product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,12 +20,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/product")
+@Slf4j
 public class ProductController {
 
     private final ProductService productService;
@@ -51,7 +51,7 @@ public class ProductController {
 
     @PostMapping("/add")
     @PreAuthorize("isAuthenticated()")
-    public String add(@AuthenticationPrincipal User user,
+    public String add(@AuthenticationPrincipal Member member,
                       @Valid @ModelAttribute ProductDto productDto,
                       BindingResult bindingResult,
                       @RequestPart("files") MultipartFile[] files,
@@ -61,7 +61,7 @@ public class ProductController {
             return "product/add";
         }
         try {
-            Product product = productService.add(user, productDto, files);
+            Product product = productService.add(member, productDto, files);
 
         } catch (IOException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "파일 업로드 중 오류가 발생하였습니다.");
@@ -96,7 +96,7 @@ public class ProductController {
 
     @PostMapping("/modify/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String modify(@AuthenticationPrincipal User user,
+    public String modify(@AuthenticationPrincipal Member member,
                          @PathVariable("id") Long id,
                          @Valid @ModelAttribute ProductDto productDto,
                          BindingResult bindingResult,
@@ -108,14 +108,14 @@ public class ProductController {
 
         Product product = productService.findById(id);
 
-        Member member = memberService.findByUsername(user.getUsername());
         try {
             if (!productService.hasPermission(product, member)) {
                 redirectAttributes.addFlashAttribute("errorMessage", "권한이 없습니다.");
                 return "redirect:/product/detail/" + id;
             }
 
-            if (files != null && files.length > 0) {
+            if (files != null && files.length > 1) {
+                log.info("files size: " + files.length);
                 fileService.modify(files, product);
             }
 
@@ -137,12 +137,10 @@ public class ProductController {
     @GetMapping("/delete/{id}")
     @PreAuthorize("isAuthenticated()")
     public String delete(@PathVariable("id") Long id,
-                         @AuthenticationPrincipal User user,
+                         @AuthenticationPrincipal Member member,
                          RedirectAttributes redirectAttributes) {
 
         Product product = productService.findById(id);
-
-        Member member = memberService.findByUsername(user.getUsername());
 
         if (!productService.hasPermission(product, member)) {
             redirectAttributes.addFlashAttribute("errorMessage", "권한이 없습니다.");
@@ -156,14 +154,12 @@ public class ProductController {
     @GetMapping("/fileDelete/{fileId}")
     @PreAuthorize("isAuthenticated()")
     public String fileDelete(@PathVariable("fileId") Long fileId,
-                             @AuthenticationPrincipal User user,
+                             @AuthenticationPrincipal Member member,
                              RedirectAttributes redirectAttributes) {
 
         FileUploadEntity file = fileService.findById(fileId);
 
         Product product = file.getProduct();
-
-        Member member = memberService.findByUsername(user.getUsername());
 
         if (!productService.hasPermission(product, member)) {
             redirectAttributes.addFlashAttribute("errorMessage", "권한이 없습니다.");
