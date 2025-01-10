@@ -47,7 +47,7 @@ public class WebSecurityConfig {
                                 XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN
                         )))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/", "/member/join", "/member/loginForm","/member/login",
+                        .requestMatchers("/", "/member/join","/member/join_manual", "/member/loginForm","/member/login",
                                 "/product/list", "/product/detail/**", "/member/idCheck/**", "/member/oauth2/**",
                                 "/favicon.ico", "/error").permitAll()
                         .anyRequest().authenticated()
