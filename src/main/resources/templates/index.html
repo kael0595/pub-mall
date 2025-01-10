@@ -5,10 +5,45 @@
     <title>메인페이지</title>
 </head>
 <body>
-<a th:href="@{/member/join}">회원가입</a>
+<a th:href="@{/member/join_manual}">회원가입</a>
 <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/member/loginForm}">로그인</a>
 <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
 <a th:href="@{/product/list}">상품 목록</a>
-<a th:href="@{/member/mypage/me}">마이페이지</a>
+<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/member/mypage/me}">마이페이지</a>
+<h2>인기상품</h2>
+<table>
+    <thead>
+    <tr>
+        <th>NO.</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product : ${productList}">
+        <td th:text="${product.id}"></td>
+    </tr>
+    </tbody>
+</table>
+<hr>
+<h2>공지사항</h2>
+<table>
+    <thead>
+    <tr>
+        <th>NO.</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>조회수</th>
+        <th>작성일자</th>
+        <th>수정일자</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="notice : ${noticeList}">
+        <td th:text="${notice.id}"></td>
+        <td>
+            <a th:href="@{|/notice/detail/${notice.id}}" th:text="${notice.title}"></a>
+        </td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>
