@@ -10,6 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 @AllArgsConstructor
@@ -20,6 +22,8 @@ public class Notice extends BaseEntity {
     private String title;
 
     private String content;
+
+    private LocalDateTime updateDt;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
