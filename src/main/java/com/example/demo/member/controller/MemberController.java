@@ -69,7 +69,7 @@ public class MemberController {
 
         memberService.join(memberDto);
 
-        return "redirect:/member/login";
+        return "redirect:/member/loginForm";
     }
 
     @GetMapping("/loginForm")
@@ -135,12 +135,11 @@ public class MemberController {
     }
 
     @GetMapping("/mypage/me")
-    public String meForm(@AuthenticationPrincipal User user,
+    public String meForm(@AuthenticationPrincipal Member member,
                          @AuthenticationPrincipal OAuth2User oAuth2User,
                          Model model) {
 
-        if (user != null) {
-            Member member = memberService.findByUsername(user.getUsername());
+        if (member != null) {
 
             MemberDto memberDto = new MemberDto();
             memberDto.setUsername(member.getUsername());
@@ -155,18 +154,18 @@ public class MemberController {
             model.addAttribute("memberDto", memberDto);
         } else if (oAuth2User != null) {
 
-            Member member = memberService.findByProviderId(oAuth2User.getName());
+            Member oAuth2member = memberService.findByProviderId(oAuth2User.getName());
 
             MemberDto memberDto = new MemberDto();
-            memberDto.setUsername(member.getUsername());
-            memberDto.setName(member.getName());
-            memberDto.setNickname(member.getNickname());
-            memberDto.setEmail(member.getEmail());
-            memberDto.setPhone(member.getPhone());
-            memberDto.setAddr1(member.getAddr1());
-            memberDto.setAddr2(member.getAddr2());
+            memberDto.setUsername(oAuth2member.getUsername());
+            memberDto.setName(oAuth2member.getName());
+            memberDto.setNickname(oAuth2member.getNickname());
+            memberDto.setEmail(oAuth2member.getEmail());
+            memberDto.setPhone(oAuth2member.getPhone());
+            memberDto.setAddr1(oAuth2member.getAddr1());
+            memberDto.setAddr2(oAuth2member.getAddr2());
 
-            model.addAttribute("member", member);
+            model.addAttribute("member", oAuth2member);
             model.addAttribute("memberDto", memberDto);
         }
 
