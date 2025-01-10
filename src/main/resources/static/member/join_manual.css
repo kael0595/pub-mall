@@ -1,0 +1,73 @@
+.join{
+    text-align:center;
+}
+
+.btnPrimary{
+    font-size:20px;
+    width:100px;
+    height:50px;
+    margin-top:20px;
+    margin-bottom:20px;
+    background: #000;
+    color:white;
+    border-radius:10px;
+    border:none;
+    position:absolute;
+    left:85%;
+}
+
+.btnPrimary:hover{
+    font-size:20px;
+    width:100px;
+    height:50px;
+    margin-top:20px;
+    margin-bottom:20px;
+    background: #ff6c00;
+    color:white;
+    border-radius:10px;
+    border:none;
+    position:absolute;
+    left:85%;
+}
+
+.joinForm{
+    width:40%;
+    height:100vh;
+    position:absolute;
+    top:20%;
+    left:30%;
+}
+
+label{
+    display:block;
+    padding-left:20px;
+    padding-top:20px;
+    margin:0;
+    font-family: "NanumBarunGothic", sans-serif;
+}
+p{
+    padding:0;
+    margin-left:40px;
+    margin-bottom:20px;
+
+}
+
+.userdata{
+    padding:10px;
+    margin:20px;
+    margin-top:0;
+    font-size:10px;
+    height:100px;
+    border-color:#a5a773;
+    border:1px solid ;
+    overflow-y:hidden;
+    overflow-y:scroll;
+}
+
+.signup{
+    color:#000;
+}
+
+.agree{
+    color: #ff6c00;
+}

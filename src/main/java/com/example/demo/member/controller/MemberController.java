@@ -6,7 +6,6 @@ import com.example.demo.cartItem.entity.CartItem;
 import com.example.demo.cartItem.service.CartItemService;
 import com.example.demo.member.dto.MemberDto;
 import com.example.demo.member.entity.Member;
-import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.member.service.MemberService;
 import com.example.demo.order.entity.Order;
 import com.example.demo.order.service.OrderService;
@@ -47,7 +46,10 @@ public class MemberController {
 
     private final OrderService orderService;
 
-    private final MemberRepository memberRepository;
+    @GetMapping("/join_manual")
+    public String joinManual() {
+        return "member/join_manual";
+    }
 
     @GetMapping("/join")
     public String joinForm() {
