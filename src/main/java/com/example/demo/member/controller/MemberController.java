@@ -4,6 +4,7 @@ import com.example.demo.cart.entity.Cart;
 import com.example.demo.cart.service.CartService;
 import com.example.demo.cartItem.entity.CartItem;
 import com.example.demo.cartItem.service.CartItemService;
+import com.example.demo.mail.service.MailService;
 import com.example.demo.member.dto.MemberDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.service.MemberService;
@@ -11,6 +12,7 @@ import com.example.demo.order.entity.Order;
 import com.example.demo.order.service.OrderService;
 import com.example.demo.orderItem.entity.OrderItem;
 import com.example.demo.orderItem.service.OrderItemService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -27,6 +29,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +48,8 @@ public class MemberController {
     private final OrderItemService orderItemService;
 
     private final OrderService orderService;
+
+    private final MailService mailService;
 
     @GetMapping("/join_manual")
     public String joinManual() {
@@ -73,9 +78,15 @@ public class MemberController {
         return "redirect:/member/loginForm";
     }
 
+    @GetMapping("/emailCheck")
+    @ResponseBody
+    public String emailCheck(@RequestParam("email") String email) throws MessagingException, UnsupportedEncodingException {
+        String authCode = mailService.sendSimpleMessage(email);
+        return authCode;
+    }
+
     @GetMapping("/loginForm")
-    public String loginForm(Model model,
-                            @AuthenticationPrincipal Member member,
+    public String loginForm(@AuthenticationPrincipal Member member,
                             @AuthenticationPrincipal OAuth2User oauth2User) {
 
         if (member != null || oauth2User != null) {
@@ -115,6 +126,7 @@ public class MemberController {
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     member, null, authorities);
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             // 세션에 인증 정보를 저장
