@@ -3,6 +3,7 @@ package com.example.demo.mail.service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,8 @@ public class MailService {
 
     private final JavaMailSender mailSender;
 
-    private static final String senderEmail = "changgyu549@gmail.com";
+    @Value("${spring.mail.username}")
+    private static String senderEmail;
 
     public String createNumber() {
         Random random = new Random();
@@ -28,9 +30,10 @@ public class MailService {
             switch (index) {
                 case 0 -> key.append((char) (random.nextInt(26) + 97));
                 case 1 -> key.append((char) (random.nextInt(26) + 65));
-                case 2 -> key.append((char) (random.nextInt(10)));
+                case 2 -> key.append((char) (random.nextInt(10) + '0'));
             }
         }
+
         return key.toString();
     }
 
