@@ -105,11 +105,7 @@ public class MemberController {
     @ResponseBody
     public ResponseEntity<String> authCheck(@RequestParam("authCode") String inputCode, HttpSession session) {
 
-        log.info("authCode : {}", inputCode);
-
         String authCode = (String) session.getAttribute("authCode");
-
-        log.info("authCode : {}", authCode);
 
         if (authCode == null) {
             return ResponseEntity.badRequest().body("인증번호가 만료되었습니다.");
@@ -180,6 +176,26 @@ public class MemberController {
     @PostMapping("/logout")
     public String logout() {
         return "redirect:/";
+    }
+
+    @GetMapping("/find")
+    public String memberFind() {
+        return "member/find";
+    }
+
+    @PostMapping("/find/id")
+    @ResponseBody
+    public ResponseEntity<String> memberFindId(@RequestParam("email") String email) {
+
+        Member member = memberService.findByEmail(email);
+
+        if (member == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 이메일로 가입된 회원을 찾을 수 없습니다.");
+        }
+
+        log.info("username : {}", member.getUsername());
+
+        return ResponseEntity.ok(member.getUsername());
     }
 
     @GetMapping("/mypage/me")
