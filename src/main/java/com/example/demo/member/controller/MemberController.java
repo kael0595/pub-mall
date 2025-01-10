@@ -94,7 +94,7 @@ public class MemberController {
         }
 
         try {
-            log.info("memberDto: {}", memberDto.toString());
+
             Member member = memberService.login(memberDto.getUsername(), memberDto.getPassword());
 
             if (member == null) {
@@ -199,8 +199,6 @@ public class MemberController {
             orderItemList.addAll(orderItems);
         }
 
-        System.out.println(orderItemList.size());
-
         model.addAttribute("orderItemList", orderItemList);
 
         model.addAttribute("orderList", orderList);
@@ -249,51 +247,4 @@ public class MemberController {
 
         return (member != null) ? 1 : 0;
     }
-
-    @GetMapping("/update-email")
-    public String updateEmail() {
-        return "member/update-email";
-    }
-
-    @PostMapping("/update-email")
-    public String updateEmail(@RequestParam("email") String email,
-                              @AuthenticationPrincipal OAuth2User oAuth2User) {
-
-        String provider = "";
-
-        String providerId = "";
-
-        if ("kakao".equals(oAuth2User.getAttributes().get("provider"))) {
-            provider = "kakao";
-            providerId = (String) oAuth2User.getAttributes().get("id");
-        } else if ("naver".equals(oAuth2User.getAttributes().get("provider"))) {
-            provider = "naver";
-            providerId = (String) oAuth2User.getAttributes().get("response");
-        } else if ("google".equals(oAuth2User.getAttributes().get("provider"))) {
-            provider = "google";
-            providerId = (String) oAuth2User.getAttributes().get("sub");
-        }
-
-        log.info("provider: " + provider);
-
-        log.info("providerId: " + providerId);
-
-        Member member = memberService.findByProviderId(provider);
-
-//        if (memberService.existsByEmail(email)) {
-//            return "redirect:/member/update-email?error=emailExists";
-//        }
-
-        log.info("member: " + member.toString());
-
-        if (member != null) {
-            throw new RuntimeException("해당 사용자는 찾을 수 없습니다.");
-        }
-
-        member.setEmail(email);
-        memberRepository.save(member);
-
-        return "redirect:/";
-    }
-
 }
