@@ -22,7 +22,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -174,9 +173,8 @@ public class MemberController {
     }
 
     @GetMapping("/mypage/me/cart")
-    public String cartList(@AuthenticationPrincipal User user,
+    public String cartList(@AuthenticationPrincipal Member member,
                            Model model) {
-        Member member = memberService.findByUsername(user.getUsername());
 
         Cart cart = cartService.findOrCreateCart(member);
 
@@ -189,9 +187,8 @@ public class MemberController {
     }
 
     @GetMapping("/mypage/me/order")
-    public String orderList(@AuthenticationPrincipal User user,
+    public String orderList(@AuthenticationPrincipal Member member,
                             Model model) {
-        Member member = memberService.findByUsername(user.getUsername());
 
         List<Order> orderList = orderService.findAllByMember(member);
 
@@ -212,7 +209,7 @@ public class MemberController {
     }
 
     @PostMapping("/mypage/modify")
-    public String modify(@AuthenticationPrincipal User user,
+    public String modify(@AuthenticationPrincipal Member member,
                          @Valid @ModelAttribute MemberDto memberDto,
                          BindingResult bindingResult,
                          HttpSession session) {
@@ -224,8 +221,6 @@ public class MemberController {
         if (!memberDto.getPassword().equals(memberDto.getPasswordCnf())) {
             return "member/me";
         }
-
-        Member member = memberService.findByUsername(user.getUsername());
 
         if (!memberDto.getPassword().equals(memberDto.getPasswordCnf()) && (memberDto.getPassword().isEmpty() || memberDto.getPasswordCnf().isEmpty())) {
             return "member/me";
@@ -239,9 +234,7 @@ public class MemberController {
     }
 
     @GetMapping("/mypage/delete")
-    public String memberDelete(@AuthenticationPrincipal User user) {
-
-        Member member = memberService.findByUsername(user.getUsername());
+    public String memberDelete(@AuthenticationPrincipal Member member) {
 
         memberService.delete(member);
 
