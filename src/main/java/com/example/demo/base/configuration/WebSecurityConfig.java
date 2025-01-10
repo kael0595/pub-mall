@@ -52,7 +52,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/", "/member/join", "/member/join_manual", "/member/loginForm", "/member/login",
                                 "/product/list", "/product/detail/**", "/member/idCheck/**", "/member/oauth2/**",
-                                "/member/emailCheck/**", "/member/emailCheck","/member/authCheck",
+                                "/member/emailCheck/**", "/member/emailCheck","/member/authCheck", "/member/find", "/member/find/**",
                                 "/favicon.ico", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
