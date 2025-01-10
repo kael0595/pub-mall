@@ -12,9 +12,11 @@
     .id_ok, .id_already, .pw_diff, .pw_ok {
         display: none;
     }
+
     .id_ok, .pw_ok {
         color: blue;
     }
+
     .id_already, .pw_diff {
         color: red;
     }
@@ -50,6 +52,11 @@
         <div>
             <label for="email">이메일</label>
             <input type="text" id="email" name="email">
+            <button id="emailCheck" name="emailCheck" type="button" onclick="emailCheck()">인증번호 전송</button>
+        </div>
+        <div>
+            <label for="authCode">인증번호</label>
+            <input type="text" id="authCode" name="authCode" oninput="authCheck()">
         </div>
         <div>
             <label for="phone">전화번호</label>
@@ -127,13 +134,53 @@
         }
     }
 
+    $('#emailCheck').on('click', function(event) {
+
+        event.preventDefault();
+
+        var email = $('#email').val();
+        if (!email.trim()) {
+            return;
+        }
+        $.ajax({
+            type: "get",
+            url: "/member/emailCheck",
+            data: { email: email },
+            success: function(response) {
+                alert("이메일 인증번호를 전송했습니다.");
+            },
+            error: function() {
+                alert("이메일 인증번호 전송에 실패했습니다. 다시 확인해주세요.");
+            }
+        });
+    });
+
+    const authCheck = () => {
+        var authCode = $('#authCode').val();
+
+        if (!authCode.trim()) {
+            return;
+        }
+        $.ajax({
+            type: "get",
+            url: "/member/authCheck",
+            data: {authCode: encodeURIComponent(authCode)},
+            success: function (response) {
+                alert(response);
+            },
+            error: function () {
+                alert("오류가 발생하였습니다.")
+            }
+        })
+    }
+
     const validation = () => {
         let isValid = true;
 
         const requiredFields = [
             'username',
-            'password1',
-            'password2',
+            'password',
+            'passwordCnd',
             'name',
             'nickname',
             'email',
@@ -161,7 +208,7 @@
         return isValid;
     };
 
-    $('form').on('submit', function (event){
+    $('form').on('submit', function (event) {
         if (!validation()) {
             event.preventDefault();
         }
