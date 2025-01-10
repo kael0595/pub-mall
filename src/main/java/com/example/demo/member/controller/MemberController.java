@@ -18,6 +18,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -80,9 +82,46 @@ public class MemberController {
 
     @GetMapping("/emailCheck")
     @ResponseBody
-    public String emailCheck(@RequestParam("email") String email) throws MessagingException, UnsupportedEncodingException {
-        String authCode = mailService.sendSimpleMessage(email);
-        return authCode;
+    public ResponseEntity<String> emailCheck(@RequestParam("email") String email, HttpSession session) throws MessagingException, UnsupportedEncodingException {
+
+        try {
+
+            String authCode = mailService.sendSimpleMessage(email);
+
+            session.setAttribute("authCode", authCode);
+            session.setMaxInactiveInterval(300);
+
+            log.info("session : {}", session.getAttribute("authCode"));
+
+            return ResponseEntity.ok("인증번호가 전송되었습니다.");
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증번호 전송에 실패하였습니다.");
+        }
+    }
+
+    @GetMapping("/authCheck")
+    @ResponseBody
+    public ResponseEntity<String> authCheck(@RequestParam("authCode") String inputCode, HttpSession session) {
+
+        log.info("authCode : {}", inputCode);
+
+        String authCode = (String) session.getAttribute("authCode");
+
+        log.info("authCode : {}", authCode);
+
+        if (authCode == null) {
+            return ResponseEntity.badRequest().body("인증번호가 만료되었습니다.");
+        }
+
+        if (!authCode.equals(inputCode)) {
+            return ResponseEntity.badRequest().body("인증번호가 일치하지 않습니다.");
+        }
+
+        session.removeAttribute("authCode");
+
+        return ResponseEntity.ok("인증 성공");
     }
 
     @GetMapping("/loginForm")
@@ -128,10 +167,6 @@ public class MemberController {
                     member, null, authorities);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            // 세션에 인증 정보를 저장
-            HttpSession session = request.getSession();
-            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
             return "redirect:/";
 
