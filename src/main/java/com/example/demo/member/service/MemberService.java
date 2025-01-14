@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -64,17 +65,15 @@ public class MemberService {
 
     public void modify(Member member, MemberDto memberDto) {
 
-        member.toBuilder()
-                .nickname(memberDto.getNickname())
-                .name(memberDto.getName())
-                .email(memberDto.getEmail())
-                .phone(memberDto.getPhone())
-                .addr1(memberDto.getAddr1())
-                .addr2(memberDto.getAddr2())
-                .password(passwordEncoder.encode(memberDto.getPassword()))
-                .updateDt(LocalDateTime.now());
-
+        member.setNickname(memberDto.getNickname());
+        member.setEmail(memberDto.getEmail());
+        member.setPhone(memberDto.getPhone());
+        member.setAddr1(memberDto.getAddr1());
+        member.setAddr2(memberDto.getAddr2());
+        member.setPassword(passwordEncoder.encode(memberDto.getPassword()));
+        member.setUpdateDt(LocalDateTime.now());
         memberRepository.save(member);
+        
     }
 
     public Member findById(Long id) {
@@ -91,7 +90,43 @@ public class MemberService {
         return memberRepository.findByProviderId(providerId);
     }
 
-    public Member findByEmail(String email) {
+    public Member findMemberByEmail(String email) {
         return memberRepository.findMemberByEmail(email);
+    }
+
+    public Member findMemberByUsernameAndEmail(String username, String email) {
+        return memberRepository.findMemberByUsernameAndEmail(username, email);
+    }
+
+    public String createTempPassword() {
+        Random random = new Random();
+
+        StringBuilder key = new StringBuilder();
+
+        for (int i = 0; i < 8; i++) {
+            int index = random.nextInt(3);
+
+            switch (index) {
+                case 0 -> key.append((char) (random.nextInt(26) + 97));
+                case 1 -> key.append((char) (random.nextInt(26) + 65));
+                case 2 -> key.append((char) (random.nextInt(10) + '0'));
+            }
+        }
+
+        String tempPassword = key.toString();
+
+        return tempPassword;
+    }
+
+    public String setTempPassword(Member member) {
+
+        String tempPassword = createTempPassword();
+
+        member.setPassword(passwordEncoder.encode(tempPassword));
+
+        memberRepository.save(member);
+
+        return tempPassword;
+
     }
 }

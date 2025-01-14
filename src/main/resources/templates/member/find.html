@@ -20,12 +20,12 @@
         <input type="text" id="username" name="username">
         <label for="email2">이메일</label>
         <input type="text" id="email2" name="email2">
-        <button onclick="findPassword()">비밀번호 찾기</button>
+        <button id="findPassword" name="findPassword" onclick="findPassword()">비밀번호 찾기</button>
     </form>
 </div>
 </body>
 <script>
-    $('#findId').on('click', function(event) {
+    $('#findId').on('click', function (event) {
 
         event.preventDefault();
 
@@ -36,12 +36,37 @@
         $.ajax({
             type: "post",
             url: "/member/find/id",
-            data: { email: email },
-            success: function(response) {
+            data: {email: email},
+            success: function (response) {
                 alert(response);
             },
-            error: function() {
+            error: function () {
                 alert("해당 이메일로 등록된 아이디를 찾을 수 없습니다.");
+            }
+        });
+    });
+    $('#findPassword').on('click', function (event) {
+
+        event.preventDefault();
+
+        var email = $('#email2').val();
+        var username = $('#username').val();
+
+        console.log(email);
+        console.log(username);
+
+        if (!email.trim()) {
+            return;
+        }
+        $.ajax({
+            type: "post",
+            url: "/member/find/password",
+            data: {email: email, username: username},
+            success: function (response) {
+                alert(response);
+            },
+            error: function () {
+                alert("해당 아이디와 이메일로로 등록된 회원을 찾을 수 없습니다.");
             }
         });
     });

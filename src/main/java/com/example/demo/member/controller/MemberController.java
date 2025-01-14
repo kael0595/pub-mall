@@ -164,6 +164,8 @@ public class MemberController {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            log.info("authentication : {}", authentication);
+
             return "redirect:/";
 
         } catch (Exception e) {
@@ -187,15 +189,30 @@ public class MemberController {
     @ResponseBody
     public ResponseEntity<String> memberFindId(@RequestParam("email") String email) {
 
-        Member member = memberService.findByEmail(email);
+        Member member = memberService.findMemberByEmail(email);
 
         if (member == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 이메일로 가입된 회원을 찾을 수 없습니다.");
         }
 
-        log.info("username : {}", member.getUsername());
-
         return ResponseEntity.ok(member.getUsername());
+    }
+
+    @PostMapping("/find/password")
+    @ResponseBody
+    public ResponseEntity<String> memberFindPassword(@RequestParam("username") String username, @RequestParam("email") String email) throws MessagingException {
+
+        Member member = memberService.findMemberByUsernameAndEmail(username, email);
+
+       String tempPassword = memberService.setTempPassword(member);
+
+        mailService.sendTempPassword(email, tempPassword);
+
+        if (member == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("해당 아이디와 이메일로 가입된 회원을 찾을 수 없습니다.");
+        }
+
+        return ResponseEntity.ok("임시 비밀번호가 정상적으로 발급되었습니다.");
     }
 
     @GetMapping("/mypage/me")
