@@ -23,6 +23,8 @@ public class Notice extends BaseEntity {
 
     private String content;
 
+    private int viewCount;
+
     private LocalDateTime updateDt;
 
     @ManyToOne
