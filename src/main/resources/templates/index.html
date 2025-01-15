@@ -8,8 +8,9 @@
 <a th:href="@{/member/join_manual}">회원가입</a>
 <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/member/loginForm}">로그인</a>
 <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
-<a th:href="@{/product/list}">상품 목록</a>
+<a th:href="@{/product/list?page=0}">상품 목록</a>
 <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/member/mypage/me}">마이페이지</a>
+<a th:href="@{/member/find}">아이디 비밀번호 찾기</a>
 <h2>인기상품</h2>
 <table>
     <thead>
