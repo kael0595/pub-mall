@@ -2,6 +2,7 @@ package com.example.demo.comment.entity;
 
 import com.example.demo.base.entity.BaseEntity;
 import com.example.demo.member.entity.Member;
+import com.example.demo.product.entity.Product;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.JoinColumn;
@@ -27,6 +28,10 @@ public class Comment extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     private LocalDateTime updateDt;
 }
