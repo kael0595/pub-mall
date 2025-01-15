@@ -2,6 +2,7 @@ package com.example.demo.product.entity;
 
 import com.example.demo.base.entity.BaseEntity;
 import com.example.demo.cart.entity.Cart;
+import com.example.demo.comment.entity.Comment;
 import com.example.demo.file.entity.FileUploadEntity;
 import com.example.demo.member.entity.Member;
 import com.example.demo.order.entity.Order;
@@ -70,8 +71,11 @@ public class Product extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Comment> comment;
+
     public void calculateSalePrice() {
-       salePrice = this.standardPrice - (standardPrice * discount / 100);
+        salePrice = this.standardPrice - (standardPrice * discount / 100);
     }
 
 
