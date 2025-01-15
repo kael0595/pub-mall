@@ -2,7 +2,6 @@ package com.example.demo.product.service;
 
 import com.example.demo.file.service.FileService;
 import com.example.demo.member.entity.Member;
-import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.product.dto.ProductDto;
 import com.example.demo.product.entity.Product;
 import com.example.demo.product.repository.ProductRepository;
@@ -25,8 +24,6 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     private final FileService fileService;
-
-    private final MemberRepository memberRepository;
 
     public Page<Product> findAll(int page) {
 
