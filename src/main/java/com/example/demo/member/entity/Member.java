@@ -3,6 +3,7 @@ package com.example.demo.member.entity;
 import com.example.demo.base.entity.BaseEntity;
 import com.example.demo.cart.entity.Cart;
 import com.example.demo.cashLog.entity.CashLog;
+import com.example.demo.comment.entity.Comment;
 import com.example.demo.notice.entity.Notice;
 import com.example.demo.order.entity.Order;
 import com.example.demo.product.entity.Product;
@@ -82,6 +83,10 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<Notice> noticeList;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Comment> commentList;
 
     @OneToOne
     @JoinColumn(name = "cart_id")
