@@ -72,7 +72,7 @@ public class Product extends BaseEntity {
     private Order order;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Comment> comment;
+    private List<Comment> commentList;
 
     public void calculateSalePrice() {
         salePrice = this.standardPrice - (standardPrice * discount / 100);
