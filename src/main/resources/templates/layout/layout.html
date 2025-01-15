@@ -9,6 +9,8 @@
 <body>
 <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/member/loginForm}">로그인</a>
 <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
+<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/member/mypage/me}">마이페이지</a>
+<a th:href="@{/product/list}">상품목록</a>
 <!-- 네비게이션바 -->
 <!--<nav th:replace="~{navbar :: navbarFragment}"></nav>-->
 <!-- 기본 템플릿 안에 삽입될 내용 Start -->
