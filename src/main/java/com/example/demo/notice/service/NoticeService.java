@@ -32,4 +32,9 @@ public class NoticeService {
     public Notice findById(Long id) {
         return noticeRepository.findById(id).orElse(null);
     }
+
+    public void plusViewCount(Notice notice) {
+        notice.setViewCount(notice.getViewCount() + 1);
+        noticeRepository.save(notice);
+    }
 }

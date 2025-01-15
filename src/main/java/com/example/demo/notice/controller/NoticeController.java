@@ -54,6 +54,8 @@ public class NoticeController {
 
         Notice notice = noticeService.findById(id);
 
+        noticeService.plusViewCount(notice);
+
         model.addAttribute("notice", notice);
 
         return "notice/detail";
