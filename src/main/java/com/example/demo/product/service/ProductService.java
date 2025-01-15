@@ -8,6 +8,9 @@ import com.example.demo.product.entity.Product;
 import com.example.demo.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +27,13 @@ public class ProductService {
     private final FileService fileService;
 
     private final MemberRepository memberRepository;
+
+    public Page<Product> findAll(int page) {
+
+        Pageable pageable = PageRequest.of(page, 10);
+
+        return productRepository.findAll(pageable);
+    }
 
     public List<Product> findAll() {
         return productRepository.findAll();
