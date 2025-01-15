@@ -44,20 +44,19 @@
         </div>
         <div>
             <span>상품가격</span>
-            <span th:text="${product.standardPrice}"></span><span>원</span>
+            <span th:text="${product.standardPrice} + '원'"></span>
         </div>
         <div>
             <span>판매가격</span>
-            <span th:text="${product.salePrice}"></span><span>원</span>
+            <span th:text="${product.salePrice} + '원'"></span>
         </div>
         <div>
             <span>할인율</span>
-            <span th:text="${product.discount}"></span>
-            <span>%</span>
+            <span th:text="${product.discount} + '%'"></span>
         </div>
         <div>
             <span>조회수</span>
-            <span th:text="${product.viewCount}"></span><span>회</span>
+            <span th:text="${product.viewCount} + '회'"></span>
         </div>
         <div>
             <span>등록일자</span>
