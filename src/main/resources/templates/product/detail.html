@@ -6,7 +6,7 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="text-center">
+    <div class="text-center mb-5">
         <div>
             <span>상품번호</span>
             <span th:text="${product.id}"></span>
@@ -92,7 +92,19 @@
                 <button class="btn btn-primary">삭제하기</button>
             </a>
         </div>
+        <h5 th:text="|${#lists.size(product.commentList)}개의 답변이 있습니다.|"></h5>
+        <div>
+            <ul>
+                <li th:each="comment : ${product.commentList}" th:text="${comment.content}"></li>
+            </ul>
+        </div>
+        <form th:action="@{|/comment/add/${product.id}|}" method="post">
+            <textarea name="content" id="content" cols="30" rows="10"></textarea>
+            <input type="submit" value="등록">
+        </form>
     </div>
+
 </div>
+
 </body>
 </html>
