@@ -11,9 +11,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -41,6 +45,11 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public LogoutHandler logoutHandler() {
+        return new SecurityContextLogoutHandler();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -52,7 +61,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/", "/member/join", "/member/join_manual", "/member/loginForm", "/member/login",
                                 "/product/list", "/product/detail/**", "/member/idCheck/**", "/member/oauth2/**",
-                                "/member/emailCheck/**", "/member/emailCheck","/member/authCheck", "/member/find", "/member/find/**",
+                                "/member/emailCheck/**", "/member/emailCheck", "/member/authCheck", "/member/find", "/member/find/**",
                                 "/favicon.ico", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -67,10 +76,18 @@ public class WebSecurityConfig {
                 .addFilterBefore(new SecurityContextPersistenceFilter(), UsernamePasswordAuthenticationFilter.class)
 
                 .logout((logout) -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
-                .logoutSuccessUrl("/member/loginForm")
-                .invalidateHttpSession(true)
-        )
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
+                        .logoutSuccessUrl("/member/loginForm")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
+                        .addLogoutHandler((request, response, authentication) -> {
+                            if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
+                                // OAuth2 사용자 인증 정보 제거
+                                SecurityContextHolder.clearContext();
+                            }
+                        })
+                )
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(oAuth2MemberService)
