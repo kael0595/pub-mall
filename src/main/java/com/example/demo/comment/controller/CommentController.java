@@ -12,13 +12,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.nio.file.AccessDeniedException;
 
 @Controller
 @RequiredArgsConstructor
@@ -59,14 +60,19 @@ public class CommentController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteComment(@AuthenticationPrincipal Member member,
-                                @AuthenticationPrincipal OAuth2User oauth2User,
-                                @PathVariable("id") Long id) {
+    public String deleteComment(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                @PathVariable("id") Long id) throws AccessDeniedException {
+
+        Member authticatedMember = principalDetails.getMember();
 
         Comment comment = commentService.findById(id);
 
-        commentService.deleteComment(comment);
+        if (authticatedMember.getUsername().equals(comment.getMember().getUsername())) {
+            commentService.deleteComment(comment);
+        } else {
+            throw new AccessDeniedException("삭제 권한이 없습니다.");
+        }
 
-        return "redirect:/product/detail/" + id;
+        return "redirect:/product/detail/" + comment.getProduct().getId();
     }
 }
