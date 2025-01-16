@@ -64,48 +64,6 @@ public class OAuth2MemberService extends DefaultOAuth2UserService {
         return new PrincipalDetails(member, oAuth2User.getAttributes(), auth);
     }
 
-    ;
-
-//        if (provider.equals("kakao")) {
-//            Member member = memberRepository.findByOauth2Id(oauth2Id)
-//                    .orElseGet(() -> {
-//                        Member newMember = Member.builder()
-//                                .username(oauth2Id)
-//                                .oauth2Id(oauth2Id)
-//                                .name(name)
-//                                .isSocialLogin(true)
-//                                .grade(Grade.BRONZE)
-//                                .provider(provider)
-//                                .providerId(providerId)
-//                                .build();
-//                        return memberRepository.save(newMember);
-//                    });
-//        } else {
-//
-//            String email = memberInfo.getEmail();
-//
-//            Member member = memberRepository.findByOauth2Id(oauth2Id)
-//                    .orElseGet(() -> {
-//                        Member newMember = Member.builder()
-//                                .username(oauth2Id)
-//                                .oauth2Id(oauth2Id)
-//                                .name(name)
-//                                .isSocialLogin(true)
-//                                .email(email)  // 기본 이메일 설정
-//                                .grade(Grade.BRONZE)
-//                                .provider(provider)
-//                                .providerId(providerId)
-//                                .build();
-//                        return memberRepository.save(newMember);
-//                    });
-//        }
-//
-//        if (!oAuth2User.getAttributes().containsKey(principalKey)) {
-//            throw new OAuth2AuthenticationException("Principal key not found." + principalKey);
-//        }
-//        return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")), oAuth2User.getAttributes(), principalKey);
-
-
     private String getPrincipalKey(String provider) {
         switch (provider) {
             case "kakao":
