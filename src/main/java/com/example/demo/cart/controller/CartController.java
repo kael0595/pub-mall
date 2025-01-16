@@ -4,12 +4,12 @@ import com.example.demo.cart.entity.Cart;
 import com.example.demo.cart.service.CartService;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.service.MemberService;
+import com.example.demo.oauth.dto.PrincipalDetails;
 import com.example.demo.product.entity.Product;
 import com.example.demo.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +27,9 @@ public class CartController {
 
     @GetMapping("/list")
     @PreAuthorize("isAuthenticated()")
-    public String viewCart(@AuthenticationPrincipal User user, Model model) {
+    public String viewCart(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
 
-        Member member = memberService.findByUsername(user.getUsername());
+        Member member = principalDetails.getMember();
 
         Cart cart = cartService.findByMember(member);
 
@@ -40,11 +40,11 @@ public class CartController {
 
     @PostMapping("/add/{productId}")
     @PreAuthorize("isAuthenticated()")
-    public String addCartItem(@AuthenticationPrincipal User user,
+    public String addCartItem(@AuthenticationPrincipal PrincipalDetails principalDetails,
                               @PathVariable("productId") Long productId,
                               @RequestParam("amount") int amount) {
 
-        Member member = memberService.findByUsername(user.getUsername());
+        Member member = principalDetails.getMember();
 
         Product product = productService.findById(productId);
 
@@ -52,7 +52,6 @@ public class CartController {
 
         return "redirect:/member/mypage/me/cart";
     }
-
 
 
 }
