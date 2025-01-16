@@ -3,6 +3,7 @@ package com.example.demo.product.controller;
 import com.example.demo.file.entity.FileUploadEntity;
 import com.example.demo.file.service.FileService;
 import com.example.demo.member.entity.Member;
+import com.example.demo.oauth.dto.PrincipalDetails;
 import com.example.demo.product.dto.ProductDto;
 import com.example.demo.product.entity.Product;
 import com.example.demo.product.service.ProductService;
@@ -57,7 +58,7 @@ public class ProductController {
 
     @PostMapping("/add")
     @PreAuthorize("isAuthenticated()")
-    public String add(@AuthenticationPrincipal Member member,
+    public String add(@AuthenticationPrincipal PrincipalDetails principalDetails,
                       @Valid @ModelAttribute ProductDto productDto,
                       BindingResult bindingResult,
                       @RequestPart("files") MultipartFile[] files,
@@ -67,6 +68,9 @@ public class ProductController {
             return "product/add";
         }
         try {
+
+            Member member = principalDetails.getMember();
+
             Product product = productService.add(member, productDto, files);
 
         } catch (IOException e) {
@@ -102,7 +106,7 @@ public class ProductController {
 
     @PostMapping("/modify/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String modify(@AuthenticationPrincipal Member member,
+    public String modify(@AuthenticationPrincipal PrincipalDetails principalDetails,
                          @PathVariable("id") Long id,
                          @Valid @ModelAttribute ProductDto productDto,
                          BindingResult bindingResult,
@@ -111,6 +115,8 @@ public class ProductController {
         if (bindingResult.hasErrors()) {
             return "product/modify";
         }
+
+        Member member = principalDetails.getMember();
 
         Product product = productService.findById(id);
 
@@ -143,8 +149,10 @@ public class ProductController {
     @GetMapping("/delete/{id}")
     @PreAuthorize("isAuthenticated()")
     public String delete(@PathVariable("id") Long id,
-                         @AuthenticationPrincipal Member member,
+                         @AuthenticationPrincipal PrincipalDetails principalDetails,
                          RedirectAttributes redirectAttributes) {
+
+        Member member = principalDetails.getMember();
 
         Product product = productService.findById(id);
 
@@ -160,8 +168,10 @@ public class ProductController {
     @GetMapping("/fileDelete/{fileId}")
     @PreAuthorize("isAuthenticated()")
     public String fileDelete(@PathVariable("fileId") Long fileId,
-                             @AuthenticationPrincipal Member member,
+                             @AuthenticationPrincipal PrincipalDetails principalDetails,
                              RedirectAttributes redirectAttributes) {
+
+        Member member = principalDetails.getMember();
 
         FileUploadEntity file = fileService.findById(fileId);
 
