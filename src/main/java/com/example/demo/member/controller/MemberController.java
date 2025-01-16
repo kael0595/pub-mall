@@ -14,6 +14,7 @@ import com.example.demo.orderItem.entity.OrderItem;
 import com.example.demo.orderItem.service.OrderItemService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +22,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -155,28 +158,24 @@ public class MemberController {
                 return "member/login";
             }
 
-            List<GrantedAuthority> authorities = new ArrayList<>();
-
-            authorities.add(new SimpleGrantedAuthority(member.getGrade().getValue()));
-
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    member, null, authorities);
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            log.info("authentication : {}", authentication);
+            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(member.getGrade().getValue()));
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(member, null, authorities);
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
             return "redirect:/";
 
         } catch (Exception e) {
-            log.error("로그인 처리 중 오류 발생: ", e);
             model.addAttribute("error", "로그인 처리 중 오류가 발생했습니다.");
             return "member/login";
         }
     }
 
     @PostMapping("/logout")
-    public String logout() {
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
         return "redirect:/";
     }
 
@@ -204,7 +203,7 @@ public class MemberController {
 
         Member member = memberService.findMemberByUsernameAndEmail(username, email);
 
-       String tempPassword = memberService.setTempPassword(member);
+        String tempPassword = memberService.setTempPassword(member);
 
         mailService.sendTempPassword(email, tempPassword);
 
