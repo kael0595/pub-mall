@@ -4,12 +4,12 @@ import com.example.demo.cart.service.CartService;
 import com.example.demo.cartItem.service.CartItemService;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.service.MemberService;
+import com.example.demo.oauth.dto.PrincipalDetails;
 import com.example.demo.order.entity.Order;
 import com.example.demo.order.service.OrderService;
 import com.example.demo.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -39,11 +39,11 @@ public class OrderController {
     }
 
     @PostMapping("/create")
-    public String orderCreate(@AuthenticationPrincipal User user,
+    public String orderCreate(@AuthenticationPrincipal PrincipalDetails principalDetails,
                          @RequestParam("productId") Long productId,
                          @RequestParam("amount") int amount) {
 
-        Member member = memberService.findByUsername(user.getUsername());
+        Member member = principalDetails.getMember();
 
         Order order = orderService.createOrder(member, productId, amount);
 
