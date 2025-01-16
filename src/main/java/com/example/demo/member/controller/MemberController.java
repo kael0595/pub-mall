@@ -8,6 +8,7 @@ import com.example.demo.mail.service.MailService;
 import com.example.demo.member.dto.MemberDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.service.MemberService;
+import com.example.demo.oauth.dto.PrincipalDetails;
 import com.example.demo.order.entity.Order;
 import com.example.demo.order.service.OrderService;
 import com.example.demo.orderItem.entity.OrderItem;
@@ -199,7 +200,8 @@ public class MemberController {
 
     @PostMapping("/find/password")
     @ResponseBody
-    public ResponseEntity<String> memberFindPassword(@RequestParam("username") String username, @RequestParam("email") String email) throws MessagingException {
+    public ResponseEntity<String> memberFindPassword(@RequestParam("username") String username,
+                                                     @RequestParam("email") String email) throws MessagingException {
 
         Member member = memberService.findMemberByUsernameAndEmail(username, email);
 
@@ -215,47 +217,31 @@ public class MemberController {
     }
 
     @GetMapping("/mypage/me")
-    public String meForm(@AuthenticationPrincipal Member member,
-                         @AuthenticationPrincipal OAuth2User oAuth2User,
+    public String meForm(@AuthenticationPrincipal PrincipalDetails principalDetails,
                          Model model) {
 
-        if (member != null) {
+        Member member = principalDetails.getMember();
 
-            MemberDto memberDto = new MemberDto();
-            memberDto.setUsername(member.getUsername());
-            memberDto.setName(member.getName());
-            memberDto.setNickname(member.getNickname());
-            memberDto.setEmail(member.getEmail());
-            memberDto.setPhone(member.getPhone());
-            memberDto.setAddr1(member.getAddr1());
-            memberDto.setAddr2(member.getAddr2());
+        MemberDto memberDto = new MemberDto();
+        memberDto.setUsername(member.getUsername());
+        memberDto.setName(member.getName());
+        memberDto.setEmail(member.getEmail());
+        memberDto.setNickname(member.getNickname());
+        memberDto.setPhone(member.getPhone());
+        memberDto.setAddr1(member.getAddr1());
+        memberDto.setAddr2(member.getAddr2());
 
-            model.addAttribute("member", member);
-            model.addAttribute("memberDto", memberDto);
-        } else if (oAuth2User != null) {
-
-            Member oAuth2member = memberService.findByProviderId(oAuth2User.getName());
-
-            MemberDto memberDto = new MemberDto();
-            memberDto.setUsername(oAuth2member.getUsername());
-            memberDto.setName(oAuth2member.getName());
-            memberDto.setNickname(oAuth2member.getNickname());
-            memberDto.setEmail(oAuth2member.getEmail());
-            memberDto.setPhone(oAuth2member.getPhone());
-            memberDto.setAddr1(oAuth2member.getAddr1());
-            memberDto.setAddr2(oAuth2member.getAddr2());
-
-            model.addAttribute("member", oAuth2member);
-            model.addAttribute("memberDto", memberDto);
-        }
-
+        model.addAttribute("member", member);
+        model.addAttribute("memberDto", memberDto);
 
         return "member/me";
     }
 
     @GetMapping("/mypage/me/cart")
-    public String cartList(@AuthenticationPrincipal Member member,
+    public String cartList(@AuthenticationPrincipal PrincipalDetails principalDetails,
                            Model model) {
+
+        Member member = principalDetails.getMember();
 
         Cart cart = cartService.findOrCreateCart(member);
 
@@ -268,8 +254,10 @@ public class MemberController {
     }
 
     @GetMapping("/mypage/me/order")
-    public String orderList(@AuthenticationPrincipal Member member,
+    public String orderList(@AuthenticationPrincipal PrincipalDetails principalDetails,
                             Model model) {
+
+        Member member = principalDetails.getMember();
 
         List<Order> orderList = orderService.findAllByMember(member);
 
@@ -288,10 +276,12 @@ public class MemberController {
     }
 
     @PostMapping("/mypage/modify")
-    public String modify(@AuthenticationPrincipal Member member,
+    public String modify(@AuthenticationPrincipal PrincipalDetails principalDetails,
                          @Valid @ModelAttribute MemberDto memberDto,
                          BindingResult bindingResult,
                          HttpSession session) {
+
+        Member member = principalDetails.getMember();
 
         if (bindingResult.hasErrors()) {
             return "member/me";
@@ -313,7 +303,9 @@ public class MemberController {
     }
 
     @GetMapping("/mypage/delete")
-    public String memberDelete(@AuthenticationPrincipal Member member) {
+    public String memberDelete(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        Member member = principalDetails.getMember();
 
         memberService.delete(member);
 
