@@ -5,13 +5,11 @@ import com.example.demo.cart.repository.CartRepository;
 import com.example.demo.cartItem.entity.CartItem;
 import com.example.demo.cartItem.service.CartItemService;
 import com.example.demo.member.entity.Member;
-import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.product.entity.Product;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

@@ -44,6 +44,12 @@
                     <button class="btn btn-primary">주문하기</button>
                 </form>
             </td>
+            <td>
+                <form th:action="@{|/cart/deleteCartItem|}" method="post">
+                    <input type="hidden" id="id" name="id" th:value="${cartItem.id}">
+                    <button>삭제</button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>

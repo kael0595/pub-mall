@@ -28,4 +28,12 @@ public class CartItemService {
     public List<CartItem> findAllByCart(Cart cart) {
         return cartItemRepository.findAllByCart(cart);
     }
+
+    public void deleteCartItem(CartItem cartItem) {
+        cartItemRepository.delete(cartItem);
+    }
+
+    public CartItem findByCartAndProduct(Cart cart, Product product) {
+        return cartItemRepository.findByCartAndProduct(cart, product);
+    }
 }
