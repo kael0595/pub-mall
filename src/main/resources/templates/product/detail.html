@@ -91,10 +91,13 @@
                 <button class="btn btn-primary">삭제하기</button>
             </a>
         </div>
-        <h5 th:text="|${#lists.size(product.commentList)}개의 답변이 있습니다.|"></h5>
+        <h5 th:text="|${#lists.size(product.commentList)}개의 리뷰가 있습니다.|"></h5>
         <div>
             <ul>
-                <li th:each="comment : ${product.commentList}" th:text="${comment.content}"></li>
+                <li th:each="comment : ${product.commentList}">
+                    <span th:text="${comment.content}"></span>
+                    <span th:text="${comment.member.username}"></span>
+                </li>
             </ul>
         </div>
         <form th:action="@{|/comment/add/${product.id}|}" method="post">
