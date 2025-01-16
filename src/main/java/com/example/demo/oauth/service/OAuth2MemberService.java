@@ -3,22 +3,21 @@ package com.example.demo.oauth.service;
 import com.example.demo.member.entity.Grade;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
-import com.example.demo.oauth.dto.GoogleMemberInfo;
-import com.example.demo.oauth.dto.KakaoMemberInfo;
-import com.example.demo.oauth.dto.NaverMemberInfo;
-import com.example.demo.oauth.dto.Oauth2MemberInfo;
+import com.example.demo.oauth.dto.PrincipalDetails;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,74 +30,92 @@ public class OAuth2MemberService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
-        log.info("OAuth2 요청 처리 시작 - Provider: {}", userRequest.getClientRegistration().getRegistrationId());
-
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        Oauth2MemberInfo memberInfo = null;
+        String provider = userRequest.getClientRegistration().getRegistrationId();
 
-        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        String principalKey = getPrincipalKey(provider);
 
-        String principalKey = "";
+        String uniqueId = provider + "_" + oAuth2User.getAttribute(principalKey);
 
-        if (registrationId.equals("kakao")) {
-            memberInfo = new KakaoMemberInfo(oAuth2User.getAttributes());
-            principalKey = "id";
-        } else if (registrationId.equals("naver")) {
-            memberInfo = new NaverMemberInfo(oAuth2User.getAttributes());
-            principalKey = "response";
-        } else if (registrationId.equals("google")) {
-            memberInfo = new GoogleMemberInfo(oAuth2User.getAttributes());
-            principalKey = "sub";
-        } else {
-            throw new OAuth2AuthenticationException("지원되지 않는 OAuth2 Provider입니다.");
+        String providerId = oAuth2User.getAttribute(principalKey).toString();
+
+        String email = oAuth2User.getAttribute("email");
+
+        if (email == null) {
+            email = uniqueId;
         }
 
-        String provider = memberInfo.getProvider();
+        Member member = memberRepository.findByOauth2Id(uniqueId).orElseGet(
+                () -> {
+                    Member newMember = Member.builder()
+                            .username(uniqueId)
+                            .oauth2Id(uniqueId)
+                            .name(uniqueId)
+                            .isSocialLogin(true)
+                            .grade(Grade.BRONZE)
+                            .provider(provider)
+                            .providerId(providerId)
+                            .build();
+                    return memberRepository.save(newMember);
+                });
 
-        String providerId = memberInfo.getProviderId();
+        List<GrantedAuthority> auth = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + member.getGrade().name()));
+        return new PrincipalDetails(member, oAuth2User.getAttributes(), auth);
+    }
 
-        String oauth2Id = provider + "_" + providerId;
+    ;
 
-        String name = memberInfo.getName();
+//        if (provider.equals("kakao")) {
+//            Member member = memberRepository.findByOauth2Id(oauth2Id)
+//                    .orElseGet(() -> {
+//                        Member newMember = Member.builder()
+//                                .username(oauth2Id)
+//                                .oauth2Id(oauth2Id)
+//                                .name(name)
+//                                .isSocialLogin(true)
+//                                .grade(Grade.BRONZE)
+//                                .provider(provider)
+//                                .providerId(providerId)
+//                                .build();
+//                        return memberRepository.save(newMember);
+//                    });
+//        } else {
+//
+//            String email = memberInfo.getEmail();
+//
+//            Member member = memberRepository.findByOauth2Id(oauth2Id)
+//                    .orElseGet(() -> {
+//                        Member newMember = Member.builder()
+//                                .username(oauth2Id)
+//                                .oauth2Id(oauth2Id)
+//                                .name(name)
+//                                .isSocialLogin(true)
+//                                .email(email)  // 기본 이메일 설정
+//                                .grade(Grade.BRONZE)
+//                                .provider(provider)
+//                                .providerId(providerId)
+//                                .build();
+//                        return memberRepository.save(newMember);
+//                    });
+//        }
+//
+//        if (!oAuth2User.getAttributes().containsKey(principalKey)) {
+//            throw new OAuth2AuthenticationException("Principal key not found." + principalKey);
+//        }
+//        return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")), oAuth2User.getAttributes(), principalKey);
 
-        if (provider.equals("kakao")) {
-            Member member = memberRepository.findByOauth2Id(oauth2Id)
-                    .orElseGet(() -> {
-                        Member newMember = Member.builder()
-                                .username(oauth2Id)
-                                .oauth2Id(oauth2Id)
-                                .name(name)
-                                .isSocialLogin(true)
-                                .grade(Grade.BRONZE)
-                                .provider(provider)
-                                .providerId(providerId)
-                                .build();
-                        return memberRepository.save(newMember);
-                    });
-        } else {
 
-            String email = memberInfo.getEmail();
-
-            Member member = memberRepository.findByOauth2Id(oauth2Id)
-                    .orElseGet(() -> {
-                        Member newMember = Member.builder()
-                                .username(oauth2Id)
-                                .oauth2Id(oauth2Id)
-                                .name(name)
-                                .isSocialLogin(true)
-                                .email(email)  // 기본 이메일 설정
-                                .grade(Grade.BRONZE)
-                                .provider(provider)
-                                .providerId(providerId)
-                                .build();
-                        return memberRepository.save(newMember);
-                    });
+    private String getPrincipalKey(String provider) {
+        switch (provider) {
+            case "kakao":
+                return "id";
+            case "naver":
+                return "response";
+            case "google":
+                return "sub";
+            default:
+                throw new OAuth2AuthenticationException(new OAuth2Error("unsupported provider: " + provider), "지원하지 않는 provider 입니다.");
         }
-
-        if (!oAuth2User.getAttributes().containsKey(principalKey)) {
-            throw new OAuth2AuthenticationException("Principal key not found." + principalKey);
-        }
-        return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")), oAuth2User.getAttributes(), principalKey);
     }
 }

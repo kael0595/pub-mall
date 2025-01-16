@@ -3,12 +3,11 @@ package com.example.demo.oauth.dto;
 import com.example.demo.member.entity.Member;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 public class PrincipalDetails implements OAuth2User, UserDetails {
@@ -17,6 +16,8 @@ public class PrincipalDetails implements OAuth2User, UserDetails {
 
     private Map<String, Object> attributes;
 
+    private List<GrantedAuthority> authorities;
+
     public PrincipalDetails(Member member) {
         this.member = member;
     }
@@ -24,6 +25,13 @@ public class PrincipalDetails implements OAuth2User, UserDetails {
     public PrincipalDetails(Member member, Map<String, Object> attributes) {
         this.member = member;
         this.attributes = attributes;
+        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + member.getGrade().name()));
+    }
+
+    public PrincipalDetails(Member member, Map<String, Object> attributes, List<GrantedAuthority> authorities) {
+        this.member = member;
+        this.attributes = attributes;
+        this.authorities = authorities;
     }
 
     @Override
