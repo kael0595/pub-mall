@@ -39,14 +39,14 @@
             <td>
                 <form th:action="@{|/order/create|}" method="post">
                     <label for="orderAmount">수량</label>
-                    <input type="hidden" id="orderAmount" name="amount" th:value="${cartItem.amount}">
+                    <input type="number" id="orderAmount" name="amount" th:value="${cartItem.amount}">
                     <input type="hidden" id="productId" name="productId" th:value="${cartItem.product.id}">
                     <button class="btn btn-primary">주문하기</button>
                 </form>
-            </td>
-            <td>
                 <form th:action="@{|/cart/deleteCartItem|}" method="post">
-                    <input type="hidden" id="id" name="id" th:value="${cartItem.id}">
+                    <input type="hidden" id="id" name="id" th:value="${cartItem.product.id}">
+                    <label for="cartItemAmount">수량</label>
+                    <input type="number" id="cartItemAmount" name="amount" th:value="${cartItem.amount}" min="1"/>
                     <button>삭제</button>
                 </form>
             </td>

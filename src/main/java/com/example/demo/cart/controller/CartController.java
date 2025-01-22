@@ -59,27 +59,34 @@ public class CartController {
 
     @PostMapping("/deleteCartItem")
     public String deleteCartItem(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                 @RequestParam("id") Long id) {
+                                 @RequestParam("id") Long id,
+                                 @RequestParam("amount") int amount) {
+
+        if (id == null || amount <= 0 || id <= 0) {
+            throw new IllegalArgumentException("유효하지 않은 입력값입니다.");
+        }
 
         Member member = principalDetails.getMember();
 
-        Product product = productService.findById(id);
-
         Cart cart = cartService.findByMember(member);
 
-        CartItem cartItem = cartItemService.findByCartAndProduct(cart, product);
-
-        log.info("cartItem: {}", cartItem.getProduct().getName());
+        CartItem cartItem = cartItemService.findCartItemByCartAndProduct(cart, id);
 
         if (cartItem == null) {
             throw new AccessDeniedException("해당 상품은 장바구니에 존재하지 않습니다.");
         }
 
-        if (!member.getUsername().equals(cartItem.getCart().getMember().getUsername())) {
-            throw new AccessDeniedException("삭제 권한이 없습니다.");
+        if (cartItem.getAmount() < amount) {
+            throw new AccessDeniedException("삭제하려는 상품의 수량이 장바구니에 있는 상품의 수량보다 많습니다.");
         }
 
-        cartItemService.deleteCartItem(cartItem);
+        cartItem.setAmount(cartItem.getAmount() - amount);
+
+        if (cartItem.getAmount() == 0) {
+            cartItemService.deleteCartItem(cartItem);
+        } else {
+            cartItemService.save(cartItem);
+        }
 
         return "redirect:/member/mypage/me/cart";
     }
