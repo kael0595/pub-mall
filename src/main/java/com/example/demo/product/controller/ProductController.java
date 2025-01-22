@@ -3,6 +3,7 @@ package com.example.demo.product.controller;
 import com.example.demo.file.entity.FileUploadEntity;
 import com.example.demo.file.service.FileService;
 import com.example.demo.member.entity.Member;
+import com.example.demo.member.service.MemberService;
 import com.example.demo.oauth.dto.PrincipalDetails;
 import com.example.demo.product.dto.ProductDto;
 import com.example.demo.product.entity.Product;
@@ -11,9 +12,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,8 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -35,15 +34,16 @@ public class ProductController {
 
     private final FileService fileService;
 
+    private final MemberService memberService;
+
     @GetMapping("/list")
     public String list(Model model,
-                       @RequestParam(value = "page", defaultValue = "0") int page) {
+                       @RequestParam(value = "page", defaultValue = "0") int page,
+                       @RequestParam(value = "keyword", defaultValue = "") String keyword) {
 
-        List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.desc("createDt"));
-
-        Page<Product> products = productService.findAll(page);
+        Page<Product> products = productService.findAll(page, keyword);
         model.addAttribute("paging", products);
+        model.addAttribute("keyword", keyword);
 
         return "product/list";
     }
@@ -58,7 +58,7 @@ public class ProductController {
 
     @PostMapping("/add")
     @PreAuthorize("isAuthenticated()")
-    public String add(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    public String add(@AuthenticationPrincipal Object principal,
                       @Valid @ModelAttribute ProductDto productDto,
                       BindingResult bindingResult,
                       @RequestPart("files") MultipartFile[] files,
@@ -69,7 +69,16 @@ public class ProductController {
         }
         try {
 
-            Member member = principalDetails.getMember();
+            Member member = null;
+
+            if (principal instanceof PrincipalDetails principalDetails) {
+                member = principalDetails.getMember();
+            } else if (principal instanceof OAuth2User oauth2User) {
+                String provider = oauth2User.getAttribute("provider");
+                String providerId = oauth2User.getAttribute("providerId");
+                String username = provider + providerId;
+                member = memberService.findByUsername(username);
+            }
 
             Product product = productService.add(member, productDto, files);
 
