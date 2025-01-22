@@ -8,6 +8,18 @@
 
 <div layout:fragment="content" class="container my-3">
 
+    <div class="row my-3">
+        <div class="col-6">
+            <a th:href="@{/product/add}" class="btn btn-primary">상품 등록</a>
+        </div>
+        <div class="col-6">
+            <div class="input-group">
+                <input type="text" id="search_keyword" class="form-control" th:value="${keyword}">
+                <button class="btn btn-outline-secondary" type="button" id="btn_search">찾기</button>
+            </div>
+        </div>
+    </div>
+
     <table class="table">
         <thead class="table-dark">
         <tr>
@@ -31,9 +43,9 @@
             </td>
             <td th:text="${product.code}"></td>
             <td th:text="${product.category}"></td>
-            <td th:text="${product.standardPrice} + '원'"><span></span></td>
-            <td th:text="${product.salePrice} + '원'"><span></span></td>
-            <td th:text="${product.discount} + '%'"><span></span></td>
+            <td th:text="${product.standardPrice} + '원'"></td>
+            <td th:text="${product.salePrice} + '원'"></td>
+            <td th:text="${product.discount} + '%'"></td>
             <td th:text="${product.viewCount}"></td>
             <td th:text="${#temporals.format(product.createDt, 'yyyy-MM-dd HH:mm')}"></td>
             <td th:text="${#temporals.format(product.updateDt, 'yyyy-MM-dd HH:mm')}"></td>
@@ -43,27 +55,44 @@
     <div th:if="${!paging.isEmpty()}">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
-                <a class="page-link"
-                   th:href="@{|?page=${paging.number - 1}|}">
-                    <span>이전</span>
-                </a>
+                <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number - 1}">이전</a>
             </li>
-            <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
+            <li th:each="page: ${#numbers.sequence(0, paging.totalPages - 1)}"
                 th:if="${page >= paging.number - 5 and page <= paging.number + 5}"
                 th:classappend="${page == paging.number} ? 'active'"
                 class="page-item">
-                <a th:text="${page + 1}" class="page-link" th:href="@{|?page=${page}|}"></a>
+                <a class="page-link" href="javascript:void(0)" th:data-page="${page}" th:text="${page + 1}"></a>
             </li>
             <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
-                <a class="page-link" th:href="@{|?page=${paging.number + 1}|}">
-                    <span>다음</span>
-                </a>
+                <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number + 1}">다음</a>
             </li>
         </ul>
     </div>
-    <a th:href="@{|/product/add|}">
-        <button class="btn btn-primary">상품 등록</button>
-    </a>
+    <form th:action="@{/product/list}" method="get" id="search_form">
+        <input type="hidden" id="keyword" name="keyword" th:value="${keyword}">
+        <input type="hidden" id="page" name="page" th:value="${paging.number}">
+    </form>
 </div>
+
 </body>
+<script layout:fragment="script" type="text/javascript">
+    // Pagination 클릭 이벤트 처리
+    const pageElements = document.querySelectorAll(".page-link");
+    pageElements.forEach((element) => {
+        element.addEventListener("click", function () {
+            const page = this.dataset.page;
+            document.getElementById("page").value = page;
+            document.getElementById("search_form").submit();
+        });
+    });
+
+    // 검색 버튼 클릭 이벤트 처리
+    const searchButton = document.getElementById("btn_search");
+    searchButton.addEventListener("click", function () {
+        const keyword = document.getElementById("search_keyword").value;
+        document.getElementById("keyword").value = keyword;
+        document.getElementById("page").value = 0; // 검색 시 첫 페이지로 이동
+        document.getElementById("search_form").submit();
+    });
+</script>
 </html>
