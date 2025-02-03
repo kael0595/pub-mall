@@ -1,7 +1,5 @@
 package com.example.demo.order.service;
 
-import com.example.demo.cart.repository.CartRepository;
-import com.example.demo.cartItem.repository.CartItemRepository;
 import com.example.demo.cashLog.entity.CashLog;
 import com.example.demo.cashLog.entity.CashLogStatus;
 import com.example.demo.cashLog.repository.CashLogRepository;
@@ -29,10 +27,6 @@ public class OrderService {
 
     private final OrderItemRepository orderItemRepository;
 
-    private final CartRepository cartRepository;
-
-    private final CartItemRepository cartItemRepository;
-
     private final CashLogRepository cashLogRepository;
 
     @Transactional
@@ -40,12 +34,18 @@ public class OrderService {
 
         Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
 
+        if (amount < 0) {
+            throw new IllegalArgumentException("수량은 1 이상이어야 합니다.");
+        }
+
         int totalPrice = product.getSalePrice() * amount;
 
         Order order = Order.builder()
                 .member(member)
                 .status(OrderStatus.PENDING)
                 .totalPrice(totalPrice)
+                .product(product)
+                .amount(amount)
                 .shippingAddress(member.getAddr1() + " " + member.getAddr2())
                 .build();
         orderRepository.save(order);
@@ -54,13 +54,14 @@ public class OrderService {
                 .order(order)
                 .product(product)
                 .amount(amount)
-                .price(totalPrice)
+                .price(product.getSalePrice())
                 .build();
         orderItemRepository.save(orderItem);
 
         CashLog cashLog = CashLog.builder()
                 .order(order)
                 .price(totalPrice)
+                .member(member)
                 .status(CashLogStatus.PENDING)
                 .build();
         cashLogRepository.save(cashLog);
@@ -75,4 +76,5 @@ public class OrderService {
     public List<Order> findAllByMember(Member member) {
         return orderRepository.findAllByMember(member);
     }
+
 }

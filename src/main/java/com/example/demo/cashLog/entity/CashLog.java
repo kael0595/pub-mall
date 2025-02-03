@@ -20,14 +20,21 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class CashLog extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = true)
     private Order order;
 
     private int price;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
     private CashLogStatus status;
 
 

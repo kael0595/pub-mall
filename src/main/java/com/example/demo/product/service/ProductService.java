@@ -122,4 +122,8 @@ public class ProductService {
     public boolean hasPermission(Product product, Member member) {
         return product.getMember().getUsername().equals(member.getUsername());
     }
+
+    public Product findByOrderId(long id) {
+        return productRepository.findByOrderId(id);
+    }
 }
