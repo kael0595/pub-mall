@@ -86,7 +86,8 @@ public class MemberController {
 
     @GetMapping("/emailCheck")
     @ResponseBody
-    public ResponseEntity<String> emailCheck(@RequestParam("email") String email, HttpSession session) throws MessagingException, UnsupportedEncodingException {
+    public ResponseEntity<String> emailCheck(@RequestParam("email") String email,
+                                             HttpSession session) throws MessagingException, UnsupportedEncodingException {
 
         try {
 
@@ -94,8 +95,6 @@ public class MemberController {
 
             session.setAttribute("authCode", authCode);
             session.setMaxInactiveInterval(300);
-
-            log.info("session : {}", session.getAttribute("authCode"));
 
             return ResponseEntity.ok("인증번호가 전송되었습니다.");
 
@@ -107,7 +106,8 @@ public class MemberController {
 
     @GetMapping("/authCheck")
     @ResponseBody
-    public ResponseEntity<String> authCheck(@RequestParam("authCode") String inputCode, HttpSession session) {
+    public ResponseEntity<String> authCheck(@RequestParam("authCode") String inputCode,
+                                            HttpSession session) {
 
         String authCode = (String) session.getAttribute("authCode");
 
@@ -137,8 +137,7 @@ public class MemberController {
 
     @PostMapping("/login")
     public String login(@Valid @ModelAttribute MemberDto memberDto,
-                        BindingResult bindingResult, Model model,
-                        HttpServletRequest request) {
+                        BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("error", "로그인 실패! 아이디나 비밀번호를 확인하세요.");
