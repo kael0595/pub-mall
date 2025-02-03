@@ -38,12 +38,12 @@
             <td th:text="${orderItem.product.salePrice}"></td>
             <td th:text="${orderItem.product.discount} + '%'"></td>
             <td th:text="${orderItem.amount}"></td>
-            <td th:text="${orderItem.price}"></td>
+            <td th:text="${order.totalPrice}"></td>
             <td>
                 <form th:action="@{|/order/${order.id}/success}" method="get">
                     <input type="hidden" name="productId" th:value="${order.product.id}">
                     <input type="hidden" name="id" th:value="${order.id}">
-                    <input type="hidden" name="quantity" th:value="${order.totalPrice}">
+                    <input type="hidden" name="quantity" th:value="${order.amount}">
                     <button type="button" onclick="pay();" id="btn btn-primary">주문하기</button>
                 </form>
             </td>
