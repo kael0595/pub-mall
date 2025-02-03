@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>주문 상세</title>
+    <script src="https://js.tosspayments.com/v1/payment-widget"></script>
+</head>
+<body>
+<center>
+    <h1>주문상세</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>주문번호</th>
+            <th></th>
+            <th>상품명</th>
+            <th>정상가격</th>
+            <th>판매가격</th>
+            <th>할인율</th>
+            <th>수량</th>
+            <th>합계</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="orderItem : ${order.orderItemList}">
+            <td th:text="${orderItem.id}"></td>
+            <td>
+                <img th:src="${orderItem.product.fileList[0].filePath != null ? orderItem.product.fileList[0].filePath : '/images/default.png'}"
+                     alt="상품 이미지"
+                     class="img"
+                     width="100px;"
+                     height="100px;">
+            </td>
+            <td>
+                <a th:href="@{|/product/detail/${orderItem.product.id}|}" th:text="${orderItem.product.name}"></a>
+            </td>
+            <td th:text="${orderItem.product.standardPrice}"></td>
+            <td th:text="${orderItem.product.salePrice}"></td>
+            <td th:text="${orderItem.product.discount} + '%'"></td>
+            <td th:text="${orderItem.amount}"></td>
+            <td th:text="${orderItem.price}"></td>
+            <td>
+                <form th:action="@{|/order/${order.id}/success}" method="get">
+                    <input type="hidden" name="productId" th:value="${order.product.id}">
+                    <input type="hidden" name="id" th:value="${order.id}">
+                    <input type="hidden" name="quantity" th:value="${order.totalPrice}">
+                    <button type="button" onclick="pay();" id="btn btn-primary">주문하기</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+</center>
+</body>
+<script>
+
+    let productId = [[${order.product.id}]];
+
+    let amount = [[${order.amount}]];
+    let orderId = [[${order.id}]];
+    let orderName = "[[${order.product.name}]]" + " 외 " + amount + " 건"; // 값이 제대로 치환되도록 변경
+    let totalPrice = [[${order.totalPrice}]];
+    let quantity = amount;
+    let customerName = "[[${order.member.username}]]";
+
+    let tossPayments = TossPayments("test_ck_ZLKGPx4M3M41oaJJ5zo8BaWypv1o");
+
+    let path = "/order/" + orderId + "/";
+    let successUrl = window.location.origin + path + "success?" + "productId=" + productId + "&quantity=" + amount;
+    let failUrl = window.location.origin + path + "fail";
+    let callbackUrl = window.location.origin + path + "va_callback";
+    let orderNo = new Date().getTime();
+
+    function pay() {
+        const method = "카드";
+
+        const requestJson = {
+            "amount": totalPrice,
+            "quantity": amount,
+            "orderId": "sample-" + orderId + "-" + orderNo,
+            "orderName": orderName,
+            "productId": productId,
+            "successUrl": successUrl,
+            "failUrl": failUrl,
+            "cardCompany": null,
+            "cardInstallmentPlan": null,
+            "maxCardInstallmentPlan": null,
+            "useCardPoint": false,
+            "customerName": "박토스",
+            "customerEmail": null,
+            "customerMobilePhone": null,
+            "taxFreeAmount": null,
+            "useInternationalCardOnly": false,
+            "flowMode": "DEFAULT",
+            "discountCode": null,
+            "appScheme": null
+        };
+        tossPayments.requestPayment(method, requestJson)
+            .catch(function (error) {
+                if (error.code === "USER_CANCEL") {
+                    alert('유저가 취소했습니다.');
+                } else {
+                    alert(error.message);
+                }
+            });
+    }
+</script>
+
+</html>
