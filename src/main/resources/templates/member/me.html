@@ -56,11 +56,14 @@
         </div>
         <div>
             <label for="addr1">기본주소</label>
-            <input type="text" th:field="*{addr1}" readonly id="addr1">
+            <input type="text" th:field="*{addr1}" id="addr1">
         </div>
         <div>
             <label for="addr2">상세주소</label>
-            <input type="text" th:field="*{addr2}" readonly id="addr2">
+            <input type="text" th:field="*{addr2}" id="addr2">
+        </div>
+        <div>
+            <input type="hidden" th:data-social-login="${member.socialLogin}" id="socialLogin">
         </div>
         <button type="button" id="passwordCheck" name="passwordCheck" onclick="passwordCheck()">수정하기</button>
         <a th:href="@{|/member/delete|}">
@@ -103,30 +106,37 @@
 
         event.preventDefault();
 
+        let isSocialLogin = $('#socialLogin').val();
+
+        console.log(isSocialLogin);
+
         let password = $('#password').val();
         let passwordCnf = $('#passwordCnf').val();
 
         let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-        if (password.length === 0 || passwordCnf.length === 0) {
-            alert('비밀번호와 비밀번호 확인란을 모두 확인해주세요.')
-            return;
+        if (isSocialLogin === 'false') {
+            if (password.length === 0 || passwordCnf.length === 0) {
+                alert('비밀번호와 비밀번호 확인란을 모두 확인해주세요.')
+                return;
+            }
+
+            if (!password.trim() || !passwordCnf.trim()) {
+                alert('비밀번호에 공백은 사용할 수 없습니다.');
+                return;
+            }
+
+            if (!passwordRegex.test(password)) {
+                alert('비밀번호는 영문 대소문자와 숫자, 특수문자를 포함한 8자 이상이여야 합니다.');
+                return;
+            }
+
+            if (password !== passwordCnf) {
+                alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.')
+                return;
+            }
         }
 
-        if (!password.trim() || !passwordCnf.trim()) {
-            alert('비밀번호에 공백은 사용할 수 없습니다.');
-            return;
-        }
-
-        if (!passwordRegex.test(password)) {
-            alert('비밀번호는 영문 대소문자와 숫자, 특수문자를 포함한 8자 이상이여야 합니다.');
-            return;
-        }
-
-        if (password !== passwordCnf) {
-            alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.')
-            return;
-        }
 
         alert('회원 정보수정에 성공하였습니다.');
 
