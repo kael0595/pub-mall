@@ -24,27 +24,19 @@ public class MailService {
 
     private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    public String createNumber() {
-        Random random = new Random();
+    private static final Random random = new Random();
 
+    public String createNumber() {
         StringBuilder key = new StringBuilder();
 
         for (int i = 0; i < 8; i++) {
-            int index = random.nextInt(3);
-
-            switch (index) {
-                case 0 -> key.append((char) (random.nextInt(26) + 97));
-                case 1 -> key.append((char) (random.nextInt(26) + 65));
-                case 2 -> key.append((char) (random.nextInt(10) + '0'));
-            }
+            key.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
 
         return key.toString();
     }
 
     public String createProductCode() {
-        Random random = new Random();
-
         StringBuilder key = new StringBuilder();
 
         for (int i = 0; i < 16; i++) {
