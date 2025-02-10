@@ -22,6 +22,8 @@ public class MailService {
     @Value("${spring.mail.username}")
     private static String senderEmail;
 
+    private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
     public String createNumber() {
         Random random = new Random();
 
@@ -37,6 +39,17 @@ public class MailService {
             }
         }
 
+        return key.toString();
+    }
+
+    public String createProductCode() {
+        Random random = new Random();
+
+        StringBuilder key = new StringBuilder();
+
+        for (int i = 0; i < 16; i++) {
+            key.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
+        }
         return key.toString();
     }
 
@@ -97,6 +110,11 @@ public class MailService {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+
+    }
+
+    public void sendProductCode(String email) {
+
 
     }
 }
