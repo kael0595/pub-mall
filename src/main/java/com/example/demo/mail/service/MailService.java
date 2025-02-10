@@ -77,6 +77,22 @@ public class MailService {
         return mimeMessage;
     }
 
+    public MimeMessage createProductCode(String mail, String code) throws MessagingException {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+
+        mimeMessage.setFrom(senderEmail);
+        mimeMessage.setRecipients(MimeMessage.RecipientType.TO, mail);
+        mimeMessage.setSubject("구매하신 게임 코드입니다.");
+        String body = "";
+        body += "<h3>구매하신 게임 코드입니다.";
+        body += "<h1>" + code + "</h1>";
+        body += "<h3>등록하여 사용해 주십시오.</h3>";
+        body += "<h3>감사합니다.</h3>";
+        mimeMessage.setText(body, "UTF-8", "html");
+
+        return mimeMessage;
+    }
+
     public String sendSimpleMessage(String sendEmail) throws MessagingException {
         String number = createNumber();
 
@@ -105,8 +121,18 @@ public class MailService {
 
     }
 
-    public void sendProductCode(String email) {
+    public void sendProductCode(String email) throws MessagingException {
 
+        String code = createProductCode();
+
+        MimeMessage mimeMessage = createProductCode(email, code);
+
+        try {
+            mailSender.send(mimeMessage);
+        } catch (MailException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
 
     }
 }
