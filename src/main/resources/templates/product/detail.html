@@ -52,7 +52,8 @@
         </div>
         <div>
             <span>할인율</span>
-            <span th:text="${product.discount} + '%'"></span>
+            <span th:if="${member == null}" th:text="|${product.discount}%|"></span>
+            <span th:if="${member != null}" th:text="|${product.discount + member.discountAmount}%|"></span>
         </div>
         <div>
             <span>조회수</span>
@@ -107,6 +108,5 @@
     </div>
 
 </div>
-
 </body>
 </html>
