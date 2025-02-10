@@ -39,7 +39,11 @@ public class OrderService {
             throw new IllegalArgumentException("수량은 1 이상이어야 합니다.");
         }
 
+        int discount = member.getDiscountAmount();
+
         int totalPrice = product.getSalePrice() * amount;
+
+        totalPrice -= totalPrice * discount / 100;
 
         Order order = Order.builder()
                 .member(member)
