@@ -3,6 +3,7 @@ package com.example.demo.order.service;
 import com.example.demo.cashLog.entity.CashLog;
 import com.example.demo.cashLog.entity.CashLogStatus;
 import com.example.demo.cashLog.repository.CashLogRepository;
+import com.example.demo.member.entity.Grade;
 import com.example.demo.member.entity.Member;
 import com.example.demo.order.entity.Order;
 import com.example.demo.order.entity.OrderStatus;
@@ -67,6 +68,14 @@ public class OrderService {
         cashLogRepository.save(cashLog);
 
         member.setTotalAmount(member.getTotalAmount() + totalPrice);
+
+        if (member.getTotalAmount() < 200000) {
+            member.setGrade(Grade.BRONZE);
+        } else if (member.getTotalAmount() < 500000) {
+            member.setGrade(Grade.SILVER);
+        } else if (member.getTotalAmount() < 1000000) {
+            member.setGrade(Grade.GOLD);
+        }
 
         return order;
     }
