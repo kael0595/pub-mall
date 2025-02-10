@@ -61,6 +61,8 @@ public class Member extends BaseEntity {
 
     private String oauth2Id;
 
+    private int totalAmount;
+
     private boolean isSocialLogin = false;
 
     @Enumerated(EnumType.STRING)
