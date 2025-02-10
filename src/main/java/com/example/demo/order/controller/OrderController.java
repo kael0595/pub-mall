@@ -55,7 +55,12 @@ public class OrderController {
         Member member = memberService.findByUsername(principalDetails.getUsername());
 
         if (member.getAddr1() == null) {
-            session.setAttribute("message", "마이페이지에서 주소를 입력해주세요");
+            session.setAttribute("message", "마이페이지에서 주소를 입력해주세요.");
+            return "redirect:/member/mypage/me";
+        }
+
+        if (member.getEmail() == null) {
+            session.setAttribute("message", "마이페이지에서 이메일 주소를 입력해주세요.");
             return "redirect:/member/mypage/me";
         }
 
