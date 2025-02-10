@@ -92,7 +92,14 @@ public class ProductController {
     }
 
     @GetMapping("/detail/{id}")
-    public String detail(@PathVariable("id") Long id, Model model) {
+    public String detail(@AuthenticationPrincipal PrincipalDetails principal,
+                         @PathVariable("id") Long id, Model model) {
+
+        if (principal != null) {
+            Member member = memberService.findByUsername(principal.getUsername());
+            model.addAttribute("member", member);
+            System.out.println(member.toString());
+        }
 
         Product product = productService.findById(id);
         productService.plusViewCount(product);
@@ -136,7 +143,6 @@ public class ProductController {
             }
 
             if (files != null && files.length > 1) {
-                log.info("files size: " + files.length);
                 fileService.modify(files, product);
             }
 
