@@ -36,7 +36,11 @@
             </td>
             <td th:text="${orderItem.product.standardPrice}"></td>
             <td th:text="${orderItem.product.salePrice}"></td>
-            <td th:text="${orderItem.product.discount} + '%'"></td>
+            <td>
+                <span th:if="${member == null}" th:text="|${orderItem.product.discount}%|"></span>
+                <span th:if="${member != null}"
+                      th:text="|${orderItem.product.discount + member.discountAmount}%|"></span>
+            </td>
             <td th:text="${orderItem.amount}"></td>
             <td th:text="${order.totalPrice}"></td>
             <td>
