@@ -9,6 +9,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CashLogService {
@@ -40,5 +42,9 @@ public class CashLogService {
                 .status(CashLogStatus.PAID)
                 .build();
         cashLogRepository.save(cashLog);
+    }
+
+    public List<CashLog> findAll() {
+        return cashLogRepository.findAll();
     }
 }

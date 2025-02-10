@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<label>시작일 : <input type="date" id="start"></label>
+<label>종료일 : <input type="date" id="end"></label>
+<button onclick="calculateCustomRevenue()">정산하기</button>
+<table>
+    <thead>
+    <tr>
+        <th>NO.</th>
+        <th>주문명</th>
+        <th>주문자명</th>
+        <th>총액</th>
+        <th>결제일자</th>
+        <th>주문상태</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="cashLog : ${cashLogList}">
+        <td th:text="${cashLog.id}"></td>
+        <td th:text="${cashLog.product.name}"></td>
+        <td th:text="${cashLog.member.username}"></td>
+        <td th:text="${cashLog.price}"></td>
+        <td th:text="${cashLog.createDt}"></td>
+        <td th:text="${cashLog.status}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+<script>
+    function calculateCustomRevenue() {
+        let startDate = document.getElementById("start").value;
+        let endDate = document.getElementById("end").value;
+
+        if (!startDate || !endDate) {
+            alert("시작일과 종료일을 선택해주세요.");
+            return;
+        }
+
+        fetch(`/admin/cal/custom?start=${startDate}&end=${endDate}`)
+            .then(response => response.json())
+            .then(data => alert(`선택한 기간의 매출: ${data} 원`))
+            .catch(error => console.error("Error fetching revenue:", error));
+    }
+
+</script>
+</html>

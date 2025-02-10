@@ -37,5 +37,4 @@ public class CashLog extends BaseEntity {
     @Column(nullable = true)
     private CashLogStatus status;
 
-
 }
