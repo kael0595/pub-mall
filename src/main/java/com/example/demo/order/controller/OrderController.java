@@ -8,6 +8,7 @@ import com.example.demo.order.entity.Order;
 import com.example.demo.order.service.OrderService;
 import com.example.demo.product.entity.Product;
 import com.example.demo.product.service.ProductService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -48,13 +49,19 @@ public class OrderController {
     @PostMapping("/create")
     public String createOrder(@AuthenticationPrincipal PrincipalDetails principalDetails,
                               @RequestParam("productId") Long productId,
-                              @RequestParam("amount") int amount) {
+                              @RequestParam("amount") int amount,
+                              HttpSession session) {
 
         Member member = memberService.findByUsername(principalDetails.getUsername());
 
+        if (member.getAddr1() == null) {
+            session.setAttribute("message", "마이페이지에서 주소를 입력해주세요");
+            return "redirect:/member/mypage/me";
+        }
+
         Order order = orderService.createOrder(member, productId, amount);
 
-        Long orderId = order.getId();
+        long orderId = order.getId();
 
         return "redirect:/order/detail/" + orderId;
     }
@@ -63,6 +70,7 @@ public class OrderController {
     public String orderDetail(@PathVariable("orderId") Long orderId, Model model) {
 
         Order order = orderService.findById(orderId);
+
         Member member = memberService.findByUsername(order.getMember().getUsername());
         Product product = productService.findByOrderId(order.getId());
         model.addAttribute("order", order);
@@ -113,7 +121,6 @@ public class OrderController {
         JSONObject jsonObject = (JSONObject) parser.parse(reader);
         responseStream.close();
         model.addAttribute("responseStr", jsonObject.toJSONString());
-        System.out.println(jsonObject.toJSONString());
 
         model.addAttribute("method", (String) jsonObject.get("method"));
         model.addAttribute("orderName", (String) jsonObject.get("orderName"));
@@ -137,9 +144,7 @@ public class OrderController {
 
         Member member = memberService.findByUsername(principal.getName());
         Product product = productService.findById(productId);
-        Order order = orderService.createOrder(member, productId, amount);
-
-        log.info("amount : {}", amount);
+        Order order = orderService.findById(id);
 
         model.addAttribute("member", member);
         model.addAttribute("product", product);

@@ -66,6 +66,8 @@ public class OrderService {
                 .build();
         cashLogRepository.save(cashLog);
 
+        member.setTotalAmount(member.getTotalAmount() + totalPrice);
+
         return order;
     }
 
