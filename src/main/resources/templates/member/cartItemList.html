@@ -1,58 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html layout:decorate="~{/layout/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="/css/cartItemList.css">
 </head>
-<style>
-    .img {
-        width: 120px;
-        height: 120px;
-    }
-</style>
-<body>
-<center>
-    <h1>장바구니</h1>
-    <table>
-        <thead>
-        <tr>
-            <th></th>
-            <th>상품명</th>
-            <th>정상가격</th>
-            <th>판매가격</th>
-            <th>할인율</th>
-            <th>수량</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="cartItem : ${cartItemList}">
-            <td th:each="img : ${cartItem.product.fileList}">
-                <img th:src="@{${cartItem.product.fileList[0].filePath}}" alt="" id="img" class="img" name="img">
-            </td>
-            <td>
-                <a th:text="${cartItem.product.name}" th:href="@{|/product/detail/${cartItem.product.id}}"></a>
-            </td>
-            <td th:text="${cartItem.product.standardPrice}"></td>
-            <td th:text="${cartItem.product.salePrice}"></td>
-            <td th:text="${cartItem.product.discount}"></td>
-            <td th:text="${cartItem.amount}"></td>
-            <td>
-                <form th:action="@{|/order/create|}" method="post">
-                    <label for="orderAmount">수량</label>
-                    <input type="number" id="orderAmount" name="amount" th:value="${cartItem.amount}">
-                    <input type="hidden" id="productId" name="productId" th:value="${cartItem.product.id}">
-                    <button class="btn btn-primary">주문하기</button>
-                </form>
-                <form th:action="@{|/cart/deleteCartItem|}" method="post">
-                    <input type="hidden" id="id" name="id" th:value="${cartItem.product.id}">
-                    <label for="cartItemAmount">수량</label>
-                    <input type="number" id="cartItemAmount" name="amount" th:value="${cartItem.amount}" min="1"/>
-                    <button>삭제</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</center>
-</body>
+<div layout:fragment="content" class="container my-3">
+    <center>
+        <h1>장바구니</h1>
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                <th>상품명</th>
+                <th>정상가격</th>
+                <th>판매가격</th>
+                <th>할인율</th>
+                <th>수량</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cartItem : ${cartItemList}">
+                <td th:each="img : ${cartItem.product.fileList}">
+                    <img th:src="@{${cartItem.product.fileList[0].filePath}}" alt="" id="img" class="img" name="img">
+                </td>
+                <td>
+                    <a th:text="${cartItem.product.name}" th:href="@{|/product/detail/${cartItem.product.id}}"></a>
+                </td>
+                <td th:text="${cartItem.product.standardPrice}"></td>
+                <td th:text="${cartItem.product.salePrice}"></td>
+                <td th:text="${cartItem.product.discount}"></td>
+                <td th:text="${cartItem.amount}"></td>
+                <td>
+                    <form th:action="@{|/order/create|}" method="post">
+                        <label for="orderAmount">수량</label>
+                        <input type="number" id="orderAmount" name="amount" th:value="${cartItem.amount}">
+                        <input type="hidden" id="productId" name="productId" th:value="${cartItem.product.id}">
+                        <button class="btn btn-primary">주문하기</button>
+                    </form>
+                    <form th:action="@{|/cart/deleteCartItem|}" method="post">
+                        <input type="hidden" id="id" name="id" th:value="${cartItem.product.id}">
+                        <label for="cartItemAmount">수량</label>
+                        <input type="number" id="cartItemAmount" name="amount" th:value="${cartItem.amount}" min="1"/>
+                        <button>삭제</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </center>
+</div>
 </html>

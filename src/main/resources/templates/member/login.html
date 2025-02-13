@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{/layout/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>로그인</title>
 </head>
-<body>
-<a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/member/login}">로그인</a>
-<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
-<a class="nav-link" th:href="@{/member/find}">아이디 비밀번호 찾기</a>
+<div layout:fragment="content" class="container my-3">
 <center>
     <form th:action="@{/member/login}" method="post">
         <h1>로그인</h1>
@@ -43,5 +40,5 @@
         </a>
     </div>
 </center>
-</body>
+</div>
 </html>

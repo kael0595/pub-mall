@@ -1,29 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html layout:decorate="~{/layout/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <title>Title</title>
 </head>
-<body>
-<div>
-    <form action="">
-        <label for="email1">이메일</label>
-        <input type="text" id="email1" name="email1">
-        <button type="button" id="findId" name="findId" onclick="findId()">아이디 찾기</button>
-    </form>
+<div layout:fragment="content" class="container my-3">
+    <div>
+        <form action="">
+            <label for="email1">이메일</label>
+            <input type="text" id="email1" name="email1">
+            <button type="button" id="findId" name="findId" onclick="findId()">아이디 찾기</button>
+        </form>
+    </div>
+    <div>
+        <form action="">
+            <label for="username">아이디</label>
+            <input type="text" id="username" name="username">
+            <label for="email2">이메일</label>
+            <input type="text" id="email2" name="email2">
+            <button id="findPassword" name="findPassword" onclick="findPassword()">비밀번호 찾기</button>
+        </form>
+    </div>
 </div>
-<div>
-    <form action="">
-        <label for="username">아이디</label>
-        <input type="text" id="username" name="username">
-        <label for="email2">이메일</label>
-        <input type="text" id="email2" name="email2">
-        <button id="findPassword" name="findPassword" onclick="findPassword()">비밀번호 찾기</button>
-    </form>
-</div>
-</body>
+
 <script>
     $('#findId').on('click', function (event) {
 
