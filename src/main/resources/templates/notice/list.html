@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html layout:decorate="~{/layout/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{/layout/layout}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <div layout:fragment="content" class="container my-3">
+    <div>
+        <button sec:authorize="hasRole('ROLE_ADMIN')">
+            <a th:href="@{/notice/add}">등록</a>
+        </button>
+    </div>
     <table>
         <thead>
         <tr>
