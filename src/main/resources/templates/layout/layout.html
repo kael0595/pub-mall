@@ -1,24 +1,26 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<!doctype html>
+<html lang="ko">
+
 <head>
-    <meta charset="UTF-8">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
-    <title>Title</title>
+    <title>안녕하세요, 게임몰입니다.</title>
 </head>
+
 <body>
-<a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/member/loginForm}">로그인</a>
-<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
-<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/member/mypage/me}">마이페이지</a>
-<a th:href="@{/product/list}">상품목록</a>
 <!-- 네비게이션바 -->
-<!--<nav th:replace="~{navbar :: navbarFragment}"></nav>-->
+<nav th:replace="~{layout/navbar :: navbarFragment}"></nav>
 <!-- 기본 템플릿 안에 삽입될 내용 Start -->
 <th:block layout:fragment="content"></th:block>
 <!-- 기본 템플릿 안에 삽입될 내용 End -->
 <!-- Bootstrap JS -->
-<!--<script th:src="@{/bootstrap.min.js}"></script>-->
+<script th:src="@{/bootstrap.min.js}"></script>
 <!-- 자바스크립트 Start -->
 <th:block layout:fragment="script"></th:block>
-<!-- 자바스크립트 End --></body>
+<!-- 자바스크립트 End -->
+</body>
+
 </html>
