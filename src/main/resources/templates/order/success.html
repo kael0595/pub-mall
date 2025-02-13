@@ -1,41 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html layout:decorate="~{/layout/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="/css/success.css">
 </head>
-<style>
-    img {
-        width: 100px;
-        height: 100px;
-    }
-</style>
-<body>
-<center>
-    <table>
-        <thead>
-        <tr>
-            <th>주문번호</th>
-            <th></th>
-            <th>상품명</th>
-            <th>판매가격</th>
-            <th>수량</th>
-            <th>총액</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="img : ${order.product.fileList}">
-            <td th:text="${order.id}"></td>
-            <td>
-                <img th:src="${img.filePath}" alt="">
-            </td>
-            <td th:text="${order.product.name}"></td>
-            <td th:text="${order.product.salePrice}"></td>
-            <td th:text="${order.amount}"></td>
-            <td th:text="${order.totalPrice}"></td>
-        </tr>
-        </tbody>
-    </table>
-</center>
-</body>
+<div layout:fragment="content" class="container my-3">
+    <center>
+        <table>
+            <thead>
+            <tr>
+                <th>주문번호</th>
+                <th></th>
+                <th>상품명</th>
+                <th>판매가격</th>
+                <th>수량</th>
+                <th>총액</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="img : ${order.product.fileList}">
+                <td th:text="${order.id}"></td>
+                <td>
+                    <img th:src="${img.filePath}" alt="상품 사진" id="img" class="img">
+                </td>
+                <td th:text="${order.product.name}"></td>
+                <td th:text="${order.product.salePrice}"></td>
+                <td th:text="${order.amount}"></td>
+                <td th:text="${order.totalPrice}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </center>
+</div>
 </html>
