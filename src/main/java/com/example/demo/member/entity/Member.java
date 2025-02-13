@@ -26,28 +26,28 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class Member extends BaseEntity {
 
-//    @NotNull
+    //    @NotNull
 //    @NotEmpty
 //    @Column(unique = true)
     private String username;
 
-//    @NotNull
+    //    @NotNull
 //    @NotEmpty
     private String name;
 
-//    @NotNull
+    //    @NotNull
 //    @NotEmpty
     private String password;
 
-//    @NotNull
+    //    @NotNull
 //    @NotEmpty
     private String phone;
 
-//    @NotNull
+    //    @NotNull
 //    @NotEmpty
     private String email;
 
-//    @NotNull
+    //    @NotNull
 //    @NotEmpty
     private String nickname;
 
@@ -62,6 +62,8 @@ public class Member extends BaseEntity {
     private String oauth2Id;
 
     private int totalAmount;
+
+    private int discountAmount;
 
     private boolean isSocialLogin = false;
 
@@ -107,4 +109,16 @@ public class Member extends BaseEntity {
         this.providerId = providerId;
 
     }
+
+    public int getDiscountAmount() {
+        switch (this.grade) {
+            case SILVER:
+                return 5;
+            case GOLD:
+                return 10;
+            default:
+                return 0;
+        }
+    }
+
 }
