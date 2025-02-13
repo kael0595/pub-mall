@@ -9,7 +9,9 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class MailService {
     private final MemberService memberService;
 
     @Value("${spring.mail.username}")
-    private static String senderEmail;
+    private String senderEmail;
 
     private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -43,6 +45,15 @@ public class MailService {
             key.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
         return key.toString();
+    }
+
+    public Set<String> createProductCodes(int amount) {
+
+        Set<String> codes = new HashSet<>();
+        while (codes.size() < amount) {
+            codes.add(createProductCode());
+        }
+        return codes;
     }
 
     public MimeMessage createMimeMessage(String mail, String number) throws MessagingException {
@@ -68,7 +79,7 @@ public class MailService {
         mimeMessage.setRecipients(MimeMessage.RecipientType.TO, mail);
         mimeMessage.setSubject("요청하신 임시 비밀번호입니다.");
         String body = "";
-        body += "<h3>요청하신 임시 비밀번호입니다.";
+        body += "<h3>요청하신 임시 비밀번호입니다.</h3>";
         body += "<h1>" + tempPassword + "</h1>";
         body += "<h3>로그인 후 비밀번호를 변경해주세요.</h3>";
         body += "<h3>감사합니다.</h3>";
@@ -84,11 +95,31 @@ public class MailService {
         mimeMessage.setRecipients(MimeMessage.RecipientType.TO, mail);
         mimeMessage.setSubject("구매하신 게임 코드입니다.");
         String body = "";
-        body += "<h3>구매하신 게임 코드입니다.";
+        body += "<h3>구매하신 게임 코드입니다.</h3>";
         body += "<h1>" + code + "</h1>";
         body += "<h3>등록하여 사용해 주십시오.</h3>";
         body += "<h3>감사합니다.</h3>";
         mimeMessage.setText(body, "UTF-8", "html");
+
+        return mimeMessage;
+    }
+
+    public MimeMessage createProductCodes(String mail, Set<String> codes) throws MessagingException {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+
+        mimeMessage.setFrom(senderEmail);
+        mimeMessage.setRecipients(MimeMessage.RecipientType.TO, mail);
+        mimeMessage.setSubject("구매하신 게임 코드 목록입니다.");
+
+        StringBuilder body = new StringBuilder("<h3>구매하신 게임 코드입니다.</h3>");
+
+        for (String code : codes) {
+            body.append("<h1>").append(code).append("</h1>");
+        }
+
+        body.append("</h3>등록하여 사용해 주십시오.</h3>").append("<h3>감사합니다.</h3>");
+
+        mimeMessage.setText(body.toString(), "UTF-8", "html");
 
         return mimeMessage;
     }
@@ -134,5 +165,19 @@ public class MailService {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public void sendProductCodes(String email, int amount) throws MessagingException {
+
+        Set<String> codes = createProductCodes(amount);
+
+        MimeMessage mimeMessage = createProductCodes(email, codes);
+
+        try {
+            mailSender.send(mimeMessage);
+        } catch (MailException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }

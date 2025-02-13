@@ -8,6 +8,7 @@ import com.example.demo.order.entity.Order;
 import com.example.demo.order.service.OrderService;
 import com.example.demo.product.entity.Product;
 import com.example.demo.product.service.ProductService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,16 +51,16 @@ public class OrderController {
     public String createOrder(@AuthenticationPrincipal PrincipalDetails principalDetails,
                               @RequestParam("productId") Long productId,
                               @RequestParam("amount") int amount,
-                              HttpSession session) {
+                              HttpSession session) throws MessagingException {
 
         Member member = memberService.findByUsername(principalDetails.getUsername());
 
-        if (member.getAddr1() == null) {
+        if (member.getAddr1() == null || member.getAddr1().isEmpty()) {
             session.setAttribute("message", "마이페이지에서 주소를 입력해주세요.");
             return "redirect:/member/mypage/me";
         }
 
-        if (member.getEmail() == null) {
+        if (member.getEmail() == null || member.getEmail().isEmpty()) {
             session.setAttribute("message", "마이페이지에서 이메일 주소를 입력해주세요.");
             return "redirect:/member/mypage/me";
         }

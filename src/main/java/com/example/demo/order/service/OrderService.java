@@ -3,6 +3,7 @@ package com.example.demo.order.service;
 import com.example.demo.cashLog.entity.CashLog;
 import com.example.demo.cashLog.entity.CashLogStatus;
 import com.example.demo.cashLog.repository.CashLogRepository;
+import com.example.demo.mail.service.MailService;
 import com.example.demo.member.entity.Grade;
 import com.example.demo.member.entity.Member;
 import com.example.demo.order.entity.Order;
@@ -12,6 +13,7 @@ import com.example.demo.orderItem.entity.OrderItem;
 import com.example.demo.orderItem.repository.OrderItemRepository;
 import com.example.demo.product.entity.Product;
 import com.example.demo.product.repository.ProductRepository;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,8 +32,10 @@ public class OrderService {
 
     private final CashLogRepository cashLogRepository;
 
+    private final MailService mailService;
+
     @Transactional
-    public Order createOrder(Member member, Long productId, int amount) {
+    public Order createOrder(Member member, Long productId, int amount) throws MessagingException {
 
         Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
 
@@ -79,6 +83,12 @@ public class OrderService {
             member.setGrade(Grade.SILVER);
         } else if (member.getTotalAmount() < 1000000) {
             member.setGrade(Grade.GOLD);
+        }
+
+        if (amount > 1) {
+            mailService.sendProductCodes(member.getEmail(), amount);
+        } else {
+            mailService.sendProductCode(member.getEmail());
         }
 
         return order;
