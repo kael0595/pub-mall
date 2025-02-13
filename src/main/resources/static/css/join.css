@@ -1,0 +1,11 @@
+.id_ok, .id_already, .pw_diff, .pw_ok {
+    display: none;
+}
+
+.id_ok, .pw_ok {
+    color: blue;
+}
+
+.id_already, .pw_diff {
+    color: red;
+}

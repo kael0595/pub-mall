@@ -8,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,11 +39,6 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/logo/**", "/css/**", "/js/**", "/images/**");
-    }
-
-    @Bean
     public LogoutHandler logoutHandler() {
         return new SecurityContextLogoutHandler();
     }
@@ -59,6 +53,7 @@ public class WebSecurityConfig {
                                 XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN
                         )))
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/logo/**", "/css/**", "/js/**", "/images/**", "/bootstrap/**").permitAll()
                         .requestMatchers("/", "/member/join", "/member/join_manual", "/member/loginForm", "/member/login",
                                 "/product/list", "/product/detail/**", "/member/idCheck/**", "/member/oauth2/**",
                                 "/member/emailCheck/**", "/member/emailCheck", "/member/authCheck", "/member/find", "/member/find/**",
