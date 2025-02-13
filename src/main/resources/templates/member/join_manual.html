@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>회원가입</title>
     <link rel="stylesheet" href="/css/join_manual.css"/>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script th:src="@{/js/join_manual.js}"></script>
 </head>
 <div layout:fragment="content" class="container my-3">
 
@@ -14,7 +16,7 @@
         <div>
             <h1 class="join">회원가입</h1>
             <hr>
-            <label><input type="checkbox" name="color" value="all" class="allcheck"> 전체 동의하기</label>
+            <label><input type="checkbox" name="color" value="all" class="allCheck"> 전체 동의하기</label>
             <br>
             <p class="agree">아래 약관을 모두 동의합니다.</p>
             <label><input type="checkbox" name="color" value="1" class="check">[필수] 게임몰 이용약관</label>
@@ -69,32 +71,12 @@
                 정보주체는 개인정보의 수집·이용목적에 대한 동의를 거부할 수 있으며, 동의 거부시 통계청 나라통계사이트에 회원가입이 되지 않으며, 통계청 나라통계사이트에서 제공하는 서비스를 이용할 수
                 없습니다.
             </div>
-            <a th:href="@{/member/join}">
-                <button type="button" class="btnPrimary">NEXT</button>
-            </a>
+            <button type="button" class="btnPrimary">
+                <a th:href="@{/member/join}">NEXT</a>
+            </button>
         </div>
     </form>
 </div>
-<script>
-    $(document).ready(function () {
-        $('.allcheck').click(function () {
-            var checked = $('.allcheck').is(':checked');
-            if (checked) {
-                $('input:checkbox').prop('checked', true);
-            } else {
-                $('input:checkbox').prop('checked', false);
-            }
-        });
-
-        $('.btnPrimary').click(function (e) {
-            if (!$('.check:checked').length || !$('.check2:checked').length) {
-                e.preventDefault();
-                alert('필수 체크박스를 선택해주세요.');
-            }
-        });
-    });
-
-</script>
 </html>
 
 
