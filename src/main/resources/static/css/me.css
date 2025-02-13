@@ -1,0 +1,11 @@
+.pw_diff, .pw_ok, .pw_noRegex {
+    display: none;
+}
+
+.pw_ok {
+    color: blue;
+}
+
+.pw_diff, .pw_noRegex {
+    color: red;
+}
