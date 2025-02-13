@@ -53,7 +53,7 @@ public class WebSecurityConfig {
                                 XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN
                         )))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/logo/**", "/css/**", "/js/**", "/images/**", "/bootstrap/**", "/favicon.ico").permitAll()
+                        .requestMatchers("/logo/**", "/css/**", "/js/**", "/uploads/**", "/bootstrap/**", "/favicon.ico").permitAll()
                         .requestMatchers("/", "/member/join", "/member/join_manual", "/member/loginForm", "/member/login",
                                 "/product/list", "/product/detail/**", "/member/idCheck/**", "/member/oauth2/**",
                                 "/member/emailCheck/**", "/member/emailCheck", "/member/authCheck", "/member/find", "/member/find/**",
