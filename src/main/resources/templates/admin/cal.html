@@ -1,36 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html layout:decorate="~{/layout/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body>
-<label>시작일 : <input type="date" id="start"></label>
-<label>종료일 : <input type="date" id="end"></label>
-<button onclick="calculateCustomRevenue()">정산하기</button>
-<table>
-    <thead>
-    <tr>
-        <th>NO.</th>
-        <th>주문명</th>
-        <th>주문자명</th>
-        <th>총액</th>
-        <th>결제일자</th>
-        <th>주문상태</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="cashLog : ${cashLogList}">
-        <td th:text="${cashLog.id}"></td>
-        <td th:text="${cashLog.product.name}"></td>
-        <td th:text="${cashLog.member.username}"></td>
-        <td th:text="${cashLog.price}"></td>
-        <td th:text="${cashLog.createDt}"></td>
-        <td th:text="${cashLog.status}"></td>
-    </tr>
-    </tbody>
-</table>
-</body>
+<div layout:fragment="content" class="container my-3">
+    <label>시작일 : <input type="date" id="start"></label>
+    <label>종료일 : <input type="date" id="end"></label>
+    <button onclick="calculateCustomRevenue()">정산하기</button>
+    <table>
+        <thead>
+        <tr>
+            <th>NO.</th>
+            <th>주문명</th>
+            <th>주문자명</th>
+            <th>총액</th>
+            <th>결제일자</th>
+            <th>주문상태</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cashLog : ${cashLogList}">
+            <td th:text="${cashLog.id}"></td>
+            <td th:text="${cashLog.product.name}"></td>
+            <td th:text="${cashLog.member.username}"></td>
+            <td th:text="${cashLog.price}"></td>
+            <td th:text="${cashLog.createDt}"></td>
+            <td th:text="${cashLog.status}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 <script>
     function calculateCustomRevenue() {
         let startDate = document.getElementById("start").value;
