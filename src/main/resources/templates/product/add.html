@@ -1,58 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html layout:decorate="~{/layout/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>상품 등록</title>
 </head>
-<body>
-<form th:action="@{/product/add}" th:object="${product}" method="post" enctype="multipart/form-data">
-    <center>
-        <h1>상품 등록</h1>
-        <div>
-            <label for="name">상품명</label>
-            <input type="text" th:field="*{name}" id="name">
-        </div>
-        <div>
-            <label for="image">상품사진</label>
-            <input type="file" accept="image/jpeg, image/png, image/jpg" name="files" id="image" multiple>
-        </div>
-        <div>
-            <label for="code">상품코드</label>
-            <input type="text" th:field="*{code}" id="code">
-        </div>
-        <div>
-            <label for="category">게임장르</label>
-            <select name="category" th:field="*{category}" id="category">
-                <option value="레이싱">레이싱</option>
-                <option value="롤플레잉">롤플레잉</option>
-                <option value="리듬">리듬</option>
-                <option value="서바이벌">서바이벌</option>
-                <option value="슈팅">슈팅</option>
-                <option value="스포츠">스포츠</option>
-                <option value="시뮬레이션">시뮬레이션</option>
-                <option value="액션">액션</option>
-                <option value="어드벤처">어드벤처</option>
-                <option value="역사">역사</option>
-                <option value="캐주얼">캐주얼</option>
-                <option value="퀴즈">퀴즈</option>
-                <option value="퍼즐">퍼즐</option>
-            </select>
-        </div>
-        <div>
-            <label for="description">상품설명</label>
-            <input type="text" th:field="*{description}" id="description">
-        </div>
-        <div>
-            <label for="price">상품가격</label>
-            <input type="number" th:field="*{standardPrice}" id="price">
-        </div>
-        <div>
-            <label for="discount">상품할인율</label>
-            <input type="text" th:field="*{discount}" id="discount">%
-        </div>
-        <button>등록하기</button>
-        <button>취소</button>
-    </center>
-</form>
-</body>
+<div layout:fragment="content" class="container my-3">
+    <form th:action="@{/product/add}" th:object="${product}" method="post" enctype="multipart/form-data">
+        <center>
+            <h1>상품 등록</h1>
+            <div>
+                <label for="name">상품명</label>
+                <input type="text" th:field="*{name}" id="name">
+            </div>
+            <div>
+                <label for="image">상품사진</label>
+                <input type="file" accept="image/jpeg, image/png, image/jpg" name="files" id="image" multiple>
+            </div>
+            <div>
+                <label for="code">상품코드</label>
+                <input type="text" th:field="*{code}" id="code">
+            </div>
+            <div>
+                <label for="category">게임장르</label>
+                <select name="category" th:field="*{category}" id="category">
+                    <option value="레이싱">레이싱</option>
+                    <option value="롤플레잉">롤플레잉</option>
+                    <option value="리듬">리듬</option>
+                    <option value="서바이벌">서바이벌</option>
+                    <option value="슈팅">슈팅</option>
+                    <option value="스포츠">스포츠</option>
+                    <option value="시뮬레이션">시뮬레이션</option>
+                    <option value="액션">액션</option>
+                    <option value="어드벤처">어드벤처</option>
+                    <option value="역사">역사</option>
+                    <option value="캐주얼">캐주얼</option>
+                    <option value="퀴즈">퀴즈</option>
+                    <option value="퍼즐">퍼즐</option>
+                </select>
+            </div>
+            <div>
+                <label for="description">상품설명</label>
+                <input type="text" th:field="*{description}" id="description">
+            </div>
+            <div>
+                <label for="price">상품가격</label>
+                <input type="number" th:field="*{standardPrice}" id="price">
+            </div>
+            <div>
+                <label for="discount">상품할인율</label>
+                <input type="text" th:field="*{discount}" id="discount">%
+            </div>
+            <button>등록하기</button>
+            <button>취소</button>
+        </center>
+    </form>
+</div>
 </html>
